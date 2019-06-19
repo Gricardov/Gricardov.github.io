@@ -292,7 +292,7 @@
 
     </div>
   </div>
-
+  <button id="exportar">Exportar</button>
   <div id="excel" style="display: none;">
   </div>
 
@@ -718,11 +718,11 @@
   });
 
   // Script para excel
-   $.support.cors = true;  
-  var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));  
+  $.support.cors = true;
+  var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));
 
   var excelIO = new GC.Spread.Excel.IO();
-  var excelUrl = "./formatoGlassgow.xlsx";
+  var excelUrl = "./plantillas/formatoGlassgow.xlsx";
 
   var oReq = new XMLHttpRequest();
   oReq.open('get', excelUrl, true);
@@ -735,11 +735,60 @@
   };
   oReq.send(null);
 
-  function cargarExcel(json) {  
-    jsonData = json;  
-    workbook.fromJSON(json);  
+  function cargarExcel(json) {
+    jsonData = json;
+    workbook.fromJSON(json);
+    workbook.setActiveSheet("1");
 
-    workbook.setActiveSheet("Revenues (Sales)");  
-}  
-/*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
+  }
+
+  function generarExcel() {
+
+    let indFilInicio = 10;
+    let indColInicio = 0;
+
+    var sheet = workbook.getActiveSheet();
+    
+    // Por cada uno de los productos, lleno los registros del Excel
+    for (var i = 0; i < productos.length; i++) {
+      
+      let producto=productos[i];
+      sheet.addRows(indFilInicio, 0);  
+
+      sheet.setValue(indFilInicio, 0, producto.id);
+      sheet.setValue(indFilInicio, 1, producto.cantidad);
+      sheet.setValue(indFilInicio, 2, producto.unidad);
+      sheet.setValue(indFilInicio, 3, producto.descripcion);
+      sheet.setValue(indFilInicio, 4, producto.marca);
+      sheet.setValue(indFilInicio, 5, producto.precio);
+      sheet.setValue(indFilInicio, 6, producto.subtotal);
+
+      indFilInicio++;
+    }   
+    guardarExcel();
+  }
+
+  function guardarExcel() {
+    var fileName = "test";
+    if (fileName.substr(-5, 5) !== '.xlsx') {
+      fileName += '.xlsx';
+    }
+    var json = JSON.stringify(workbook.toJSON());
+
+    excelIO.save(json, function (blob) {
+      saveAs(blob, fileName);
+    }, function (e) {
+      if (e.errorCode === 1) {
+        alert(e.errorMessage);
+      }
+    });
+  }
+
+  $('#exportar').click(function () {
+    generarExcel();
+  })
+
+
+
+  /*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
 </script>
