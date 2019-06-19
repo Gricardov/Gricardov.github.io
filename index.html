@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+
+<head>
+
+  <meta charset="UTF-8">
+  <script lang="javascript" src="js/jquery-3.3.1.js"></script>
+  <link rel="stylesheet" href="css/tabla.css">
+  <script lang="javascript" src="js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="css/jquery.page.css" type="text/css" />
+  <link rel="stylesheet" href="css/all.css" />
+
+  <script lang="javascript" src="js/jquery.page.min.js"></script>
+
+  <script lang="javascript" src="js/js-xlsx/dist/shim.min.js"></script>
+  <script lang="javascript" src="js/js-xlsx/dist/xlsx.full.min.js"></script>
+
+  <script lang="javascript" src="js/FileSaver/dist/FileSaver.min.js"></script>
+  <script type="text/javascript" src="js/gc.spread.sheets.all.10.1.0.min.js"></script>
+  <script type="text/javascript" src="js/gc.spread.excelio.10.1.0.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class='panel panel-primary dialog-panel container'>
+      <div class='panel-heading row' id="encabezado">
+        <div class="col-md-offset-5 col-md-7">
+          <h4 class="float-left">Generar factura</h4>
+        </div>
+      </div>
+
+      <div id="contenedor">
+
+        <div class="container">
+
+          <div class="page" data-jquery-page-name="1">
+            <div class="row">
+              <div class="col-md-offset-2 col-md-8">
+                <h3 class="text-muted">Datos generales</h3>
+              </div>
+            </div>
+            <div class='panel-body row'>
+
+              <div class='form-horizontal'>
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtRazonSocial'>Razón social</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtRazonSocial' placeholder='Ingresar razón social'
+                      value="Mi razón social" type="text">
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtRuc'>RUC</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtRuc' placeholder='Ingresar RUC' value="123456789" type="number">
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtDireccion'>Dirección</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtDireccion' placeholder='Ingresar dirección' value="Mi dirección"
+                      type="text">
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtTelefono'>Teléfono</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtTelefono' placeholder='Ingresar teléfono' value="987654321"
+                      type="number">
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtConsiderarIGV'>IGV cálculo</label>
+                  <div class='col-md-2'>
+                    <input class='form-control' id='txtConsiderarIGV' type="number">
+                  </div>
+                  <label class='control-label col-md-1' for='txtConsiderarIGV'>%</label>
+                </div>
+
+                <div class='form-group'>
+                  <div id="mensajeForm1" class="col-md-offset-4 col-md-6"></div>
+                </div>
+
+                <div class='form-group'>
+                  <div class='col-md-offset-4 col-md-6'>
+                    <button id="btnMostrarReg2" class='btn btn-primary' style="width:100%" data-page-name="2"
+                      data-page-trans="slide-in-from-right">Siguiente</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="page" data-jquery-page-name="2">
+            <div class="row">
+              <div class="col-md-offset-2 col-md-8">
+                <h3 class="text-muted">Registro de productos</h3>
+              </div>
+            </div>
+            <div class='panel-body'>
+
+              <div class='form-horizontal'>
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtDescripcion'>Descripcion
+                    producto</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtDescripcion' placeholder='Ingresar descripción' type="text">
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='cboMarca'>Marca</label>
+                  <div class='col-md-6'>
+                    <select class='form-control' id='cboMarca'>
+                      <option>Marca 1</option>
+                      <option>Marca 2</option>
+                      <option>Marca 3</option>
+                      <option>Marca 4</option>
+                      <option>Marca 5</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='cboUnidad'>Unidad</label>
+                  <div class='col-md-6'>
+                    <select class='form-control' id='cboUnidad'>
+                      <option>UNIDAD</option>
+                      <option>GALÓN</option>
+                      <option>CAJA</option>
+                      <option>DOCENA</option>
+                      <option>OTRO</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtCantidad'>Cantidad</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtCantidad' placeholder='Ingresar cantidad' type="number">
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtPrecio'>Precio unidad</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtPrecio' placeholder='Ingresar precio' type="number">
+                  </div>
+                </div>
+
+
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtSubtotal'>Subtotal</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtSubtotal' type="number" disabled>
+                  </div>
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtIGV'>IGV</label>
+                  <div class='col-md-2'>
+                    <input class='form-control' id='txtIGV' type="number" disabled>
+                  </div>
+                  <label class='control-label col-md-1' for='txtIGV'>%</label>
+
+                </div>
+
+                <div class='form-group'>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtTotal'>Total</label>
+                  <div class='col-md-6'>
+                    <input class='form-control' id='txtTotal' type="number" disabled>
+                  </div>
+
+                </div>
+
+                <div class='form-group'>
+                  <div id="mensajeForm2" class="col-md-offset-4 col-md-6"></div>
+                </div>
+
+                <div class='form-group'>
+
+                  <div class='col-md-offset-4 col-md-2'>
+                    <button id="btnAgregar" class='btn btn-success' style="width:100%">
+                      <i class="fa fa-plus"></i> Agregar a la tabla</button>
+                  </div>
+                  <div class='col-md-2'>
+                    <button id="btnActualizar" class='btn btn-info' style="width:100%" disabled>
+                      <i class="fa fa-check"></i> Actualizar</button>
+                  </div>
+                  <div class='col-md-2'>
+                    <button id="btnCancelar" class='btn btn-danger' style="width:100%" disabled>
+                      <i class="fa fa-times"></i> Cancelar</button>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <h3 class="text-muted">Productos</h3>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+
+                    <div class="contenedor-tabla">
+
+                      <div class="tabla" id="tabla">
+
+                        <div class="fila-tabla encabezado-tabla blue">
+                          <div class="celda-tabla">
+                            Item
+                          </div>
+                          <div class="celda-tabla">
+                            Descripción
+                          </div>
+                          <div class="celda-tabla">
+                            Marca/Procedencia
+                          </div>
+                          <div class="celda-tabla">
+                            Unidad
+                          </div>
+                          <div class="celda-tabla">
+                            Cantidad
+                          </div>
+                          <div class="celda-tabla">
+                            Precio unidad
+                          </div>
+                          <div class="celda-tabla">
+                            Subtotal
+                          </div>
+                          <div class="celda-tabla">
+                            Total
+                          </div>
+                          <div class="celda-tabla">
+
+                          </div>
+                          <div class="celda-tabla">
+
+                          </div>
+                        </div>
+
+                      </div>
+
+                    </div>
+                  </div>
+
+
+
+
+
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+
+
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalOpcion" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Confirmación</h4>
+        </div>
+        <div class="modal-body" id="cuerpoModalOpcion">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btnSi" class="btn btn-danger" data-dismiss="modal">Sí</button>
+          <button type="button" class="btn btn-primary" id="btnNo" data-dismiss="modal">No</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="excel" style="display: none;">
+  </div>
+
+</body>
+
+<script>
+
+  // Los valores predeterminados
+  const RAZONSOCIAL = "Razón social predeterminada";
+  const RUC = "123456789";
+  const DIRECCION = "Mi dirección predeterminada";
+  const TELEFONO = "987654321";
+  const IGV = 18;
+
+  // Las acciones
+  const MODIFICAR = 1;
+  const ELIMINAR = 2;
+
+  // Los valores seleccionados
+  // Arreglos, textos, etc
+  let idSeleccionado = -1;
+  let accionActual = -1;
+  let igvSeleccionado = IGV;
+  let productos = [];
+
+  // Cargo los valores predeterminados
+  $('#txtRazonSocial').val(RAZONSOCIAL)
+  $('#txtRuc').val(RUC);
+  $('#txtDireccion').val(DIRECCION);
+  $('#txtTelefono').val(TELEFONO);
+  $('#txtConsiderarIGV').val(IGV);
+
+  // Cargo el deslizador de página
+  $("#contenedor").page();
+
+
+
+  // Manejo de botones y cambios
+
+  function cargarDatosCampos(id) {
+
+    let producto = null;
+
+    for (var i = 0; i < productos.length; i++) {
+      if (productos[i].id == id) {
+        producto = productos[i];
+      }
+    }
+    // Muestra los campos en el formulario para poder editarlos
+    if (producto) {
+      $("#txtDescripcion").val(producto.descripcion);
+      $("#cboMarca").val(producto.marca);
+      $("#cboUnidad").val(producto.unidad);
+      $("#txtCantidad").val(producto.cantidad);
+      $("#txtPrecio").val(producto.precio);
+      $("#txtSubtotal").val(producto.subtotal);
+      $("#txtTotal").val(producto.total);
+
+      // Y enfoco el txtDescripcion
+      $("#txtDescripcion").focus();
+
+    }
+
+  }
+
+  function limpiarCampos() {
+    $("#txtDescripcion").val("");
+    $("#cboMarca").prop('selectedIndex', 0);
+    $("#cboUnidad").prop('selectedIndex', 0);
+    $("#txtCantidad").val("");
+    $("#txtPrecio").val("");
+    $("#txtSubtotal").val("");
+    $("#txtTotal").val("");
+
+  }
+
+  function actualizarTabla() {
+
+    // Vacío la tabla
+    $("#tabla").empty();
+
+    // Reescribo el encabezado
+    $("#tabla").append(`
+    <div class="fila-tabla encabezado-tabla blue">
+                          <div class="celda-tabla">
+                            Item
+                          </div>
+                          <div class="celda-tabla">
+                            Descripción
+                          </div>
+                          <div class="celda-tabla">
+                            Marca/Procedencia
+                          </div>
+                          <div class="celda-tabla">
+                            Unidad
+                          </div>
+                          <div class="celda-tabla">
+                            Cantidad
+                          </div>
+                          <div class="celda-tabla">
+                            Precio unidad
+                          </div>
+                          <div class="celda-tabla">
+                            Subtotal
+                          </div>
+                          <div class="celda-tabla">
+                            Total
+                          </div>
+                          <div class="celda-tabla">                            
+                          </div>
+                          <div class="celda-tabla">                            
+                          </div>
+                        </div>
+    `)
+
+    for (var i = 0; i < productos.length; i++) {
+
+      let producto = productos[i];
+
+      $("#tabla").append(`<div class="fila-tabla">
+                          <div class="celda-tabla">
+                            ${producto.id}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.descripcion}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.marca}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.unidad}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.cantidad}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.precio}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.subtotal}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.total}
+                          </div>
+                          <div class="celda-tabla editarRegistro" style="cursor:pointer;" data-id=${producto.id}>
+                            <i class="fa fa-edit"></i> Editar
+                          </div>
+                          <div class="celda-tabla borrarRegistro" style="cursor:pointer;" data-id=${producto.id}>
+                            <i class="fa fa-trash"></i> Borrar
+                          </div>
+                        </div>
+`);
+
+    }
+
+  }
+
+  function agregarProducto(producto) {
+    productos.push(producto);
+    actualizarTabla();
+    limpiarCampos();
+    $("#txtDescripcion").focus();
+  }
+
+  function modificarProducto(producto) {
+    for (var i = 0; i < productos.length; i++) {
+      if (productos[i].id == producto.id) {
+        productos[i] = producto;
+      }
+    }
+    actualizarTabla();
+
+  }
+
+  function eliminarProducto(id) {
+
+    for (var i = 0; i < productos.length; i++) {
+      if (productos[i].id == id) {
+        productos.splice(i, 1);
+      }
+    }
+
+    actualizarTabla();
+
+  }
+
+
+  function calcularTotalYSubtotal(cantidad, precio) {
+
+    let subTotal = cantidad * precio;
+
+    $("#txtSubtotal").val(subTotal);
+    $("#txtTotal").val((subTotal) + ((igvSeleccionado / 100) * (subTotal)));
+  }
+
+  // Hago los cálculos apenas cambie un campo
+  $("#txtCantidad").on('input', function () {
+    let cantidad = $("#txtCantidad").val();
+    let precio = $("#txtPrecio").val();
+    if (!isNaN(cantidad) && !isNaN(precio)) {
+      calcularTotalYSubtotal(cantidad, precio);
+    }
+
+  });
+
+  $("#txtPrecio").on('input', function () {
+    let cantidad = $("#txtCantidad").val();
+    let precio = $("#txtPrecio").val();
+    if (!isNaN(cantidad) && !isNaN(precio)) {
+      calcularTotalYSubtotal(cantidad, precio);
+    }
+
+  });
+
+  // Agrego los campos al hacer click en Agregar
+  $("#btnAgregar").click(function (e) {
+
+    let descripcion = $("#txtDescripcion").val();
+    let marca = $("#cboMarca").val();
+    let unidad = $("#cboUnidad").val();
+    let cantidad = $("#txtCantidad").val();
+    let precio = $("#txtPrecio").val();
+    let subtotal = $("#txtSubtotal").val();
+    let total = $("#txtTotal").val();
+
+    // Primero, verifico si hay campos vacíos 
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && subtotal != "" && total != "") {
+      // Si todo está bien, que se agregue al arreglo
+      $('#mensajeForm2').empty();
+
+      let producto = {};
+      producto.id = productos.length + 1;
+      producto.descripcion = descripcion;
+      producto.marca = marca;
+      producto.unidad = unidad;
+      producto.cantidad = cantidad;
+      producto.precio = precio;
+      producto.subtotal = subtotal;
+      producto.total = total;
+      agregarProducto(producto);
+
+    } else {
+      $("#contenedor").page().shake();
+      $('#mensajeForm2').empty();
+      $('#mensajeForm2').append('<div class="alert alert-danger" role="alert">Verifique que todos los campos se han llenado correctamente, incluyendo números</div>');
+    }
+
+  })
+
+  // Actualizo el registro seleccionado
+  $("#btnActualizar").click(function (e) {
+
+    let descripcion = $("#txtDescripcion").val();
+    let marca = $("#cboMarca").val();
+    let unidad = $("#cboUnidad").val();
+    let cantidad = $("#txtCantidad").val();
+    let precio = $("#txtPrecio").val();
+    let subtotal = $("#txtSubtotal").val();
+    let total = $("#txtTotal").val();
+
+    // Primero, verifico si hay campos vacíos 
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && subtotal != "" && total != "") {
+      // Si todo está bien, que se agregue al arreglo
+      $('#mensajeForm2').empty();
+
+      let producto = {};
+      producto.id = idSeleccionado;
+      producto.descripcion = descripcion;
+      producto.marca = marca;
+      producto.unidad = unidad;
+      producto.cantidad = cantidad;
+      producto.precio = precio;
+      producto.subtotal = subtotal;
+      producto.total = total;
+      modificarProducto(producto);
+      limpiarCampos();
+      // Deshabilito el btnActualizar, eliminar y habilito el agregar
+      $('#btnActualizar').attr("disabled", true);
+      $('#btnCancelar').attr("disabled", true);
+      $('#btnAgregar').attr("disabled", false);
+
+      accionActual = -1;
+      idSeleccionado = -1;
+
+    } else {
+      $("#contenedor").page().shake();
+      $('#mensajeForm2').empty();
+      $('#mensajeForm2').append('<div class="alert alert-danger" role="alert">Verifique que todos los campos se han llenado correctamente, incluyendo números</div>');
+    }
+
+  })
+
+  // Cancelo la acción actual y dejo todo como estaba
+  $("#btnCancelar").click(function (e) {
+
+    accionActual = -1;
+    idSeleccionado = -1;
+
+    limpiarCampos();
+
+    // Habilito el btnActualizar, eliminar y deshabilito el agregar
+    $('#btnActualizar').attr("disabled", true);
+    $('#btnCancelar').attr("disabled", true);
+    $('#btnAgregar').attr("disabled", false);
+
+  })
+
+  // Los botones que se encuentran en cada registro
+
+  $("#tabla").on("click", ".editarRegistro", function (ev) {
+    var id = $(ev.target).attr("data-id");
+    // Luego, establezco el id y su acción actual
+    accionActual = MODIFICAR;
+    idSeleccionado = id;
+
+    // Habilito el btnActualizar, eliminar y deshabilito el agregar
+    $('#btnActualizar').attr("disabled", false);
+    $('#btnCancelar').attr("disabled", false);
+    $('#btnAgregar').attr("disabled", true);
+
+    cargarDatosCampos(id);
+
+  });
+
+  $("#tabla").on("click", ".borrarRegistro", function (ev) {
+    var id = $(ev.target).attr("data-id");
+    $("#cuerpoModalOpcion").empty();
+    $("#cuerpoModalOpcion").append(`<p>¿Deseas borrar el item ${id}?</p>`);
+
+    // Luego, establezco el id y su acción actual
+    accionActual = ELIMINAR;
+    idSeleccionado = id;
+
+    $("#modalOpcion").modal()
+
+  });
+
+  // Manejo de los botones del modal de opciones
+  $("#btnSi").on("click", function (ev) {
+    if (accionActual == ELIMINAR) {
+      eliminarProducto(idSeleccionado);
+      accionActual = -1;
+      idSeleccionado = -1;
+    }
+  });
+
+  $("#btnNo").on("click", function (ev) {
+    accionActual = -1;
+    idSeleccionado = -1;
+  });
+
+  // Manejo de deslizador de página
+
+  // La función de validación para mostrar el registro 2
+  $("#btnMostrarReg2").click(function (ev) {
+    var razonSocial = $('#txtRazonSocial').val();
+    var ruc = $('#txtRuc').val()
+    var direccion = $('#txtDireccion').val()
+    var telefono = $('#txtTelefono').val()
+    var igv = $('#txtConsiderarIGV').val()
+
+    if (razonSocial == "" || ruc == "" || direccion == "" || telefono == "" || igv == "") {
+      $("#contenedor").page().shake();
+      $('#mensajeForm1').empty();
+      $('#mensajeForm1').append('<div class="alert alert-danger" role="alert">Hay campos vacíos</div>');
+      return;
+    }
+
+    // Pasa a la siguiente página
+    var page = $(ev.target).attr("data-page-name");
+
+    var trans = $(ev.target).attr("data-page-trans");
+
+    if ($("#contenedor").page().fetch(page) === null) {
+
+      $("#contenedor").page().shake();
+    }
+    else {
+      $("#contenedor").page().transition(page, trans);
+    }
+
+    // Borro el mensaje de error si es que lo hay
+    $('#mensajeForm1').empty();
+
+    // Guardo el IGV según el elegido
+    igvSeleccionado = $('#txtConsiderarIGV').val();
+
+    // Muestro el IGV guardado
+    $('#txtIGV').val(igvSeleccionado);
+
+    // Cambio el título del encabezado
+    $('#encabezado').empty();
+    $('#encabezado').append(`
+      <div class="col-md-5" style="margin-top: 10px; cursor: pointer;" data-page-name="1"
+                      data-page-trans="slide-in-from-left" id="btnMostrarReg1">
+      <i class="fa fa-angle-left"></i> Retroceder 
+      </div>
+      <div class="col-md-7">
+      <h4 class="float-left">Generar factura</h4>
+      </div>`);
+
+  });
+
+  // Retrocede al registro 1
+  $("#encabezado").on("click", "#btnMostrarReg1", function (ev) {
+    var page = $(ev.target).attr("data-page-name");
+
+    var trans = $(ev.target).attr("data-page-trans");
+
+    if ($("#contenedor").page().fetch(page) === null) {
+
+      $("#contenedor").page().shake();
+    }
+    else {
+      $("#contenedor").page().transition(page, trans);
+    }
+
+    // Cambio el título del encabezado
+    $('#encabezado').empty();
+    $('#encabezado').append(`<div class="col-md-offset-5 col-md-7">
+          <h4 class="float-left">Generar factura</h4></div>`);
+
+  });
+
+  // Script para excel
+   $.support.cors = true;  
+  var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));  
+
+  var excelIO = new GC.Spread.Excel.IO();
+  var excelUrl = "./formatoGlassgow.xlsx";
+
+  var oReq = new XMLHttpRequest();
+  oReq.open('get', excelUrl, true);
+  oReq.responseType = 'blob';
+  oReq.onload = function () {
+    var blob = oReq.response;
+    excelIO.open(blob, cargarExcel, function (message) {
+      console.log(message);
+    });
+  };
+  oReq.send(null);
+
+  function cargarExcel(json) {  
+    jsonData = json;  
+    workbook.fromJSON(json);  
+
+    workbook.setActiveSheet("Revenues (Sales)");  
+}  
+/*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
+</script>
