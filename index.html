@@ -256,6 +256,53 @@
 
                 </div>
 
+                <div class="row">
+                  <div class="col-md-offset-9 col-md-1">
+                    <h4 class="text-muted">Total</h4>
+                  </div>
+                  <div class="col-md-2">
+                    <input class='form-control' id='txtTotalTodo' type="number" disabled>
+                  </div>
+                </div>
+
+                <div class="row" style="margin-top: 20px;">
+
+                  <div class="col-12">
+                    <ul class="nav nav-tabs row">
+                      <li class="col-md-4 active"><a data-toggle="tab" href="#menu1">Glassgow</a></li>
+                      <li class="col-md-4"><a data-toggle="tab" href="#menu2">Lineas hospitalarias</a></li>
+                      <li class="col-md-4"><a data-toggle="tab" href="#menu3">Otro formato</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                      <div id="menu1" class="tab-pane fade in active">
+                        <div class="container">
+                          <h3>Glassgow</h3>
+                          <p>Presione para generar excel</p>
+                          <button id="btnExportar" class='btn btn-primary' style="width:100%">
+                              <i class="fa fa-th"></i> Generar excel</button>
+                        </div>
+                      </div>
+                      <div id="menu2" class="tab-pane fade">
+                        <div class="container">
+
+                          <h3>Lineas hospitalarias</h3>
+                          <p>Presione para generar excel</p>
+                        </div>
+
+                      </div>
+                      <div id="menu3" class="tab-pane fade">
+                        <div class="container">
+
+                          <h3>Otro formato</h3>
+                          <p>Presione para generar excel</p>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -292,7 +339,7 @@
 
     </div>
   </div>
-  <button id="exportar">Exportar</button>
+
   <div id="excel" style="display: none;">
   </div>
 
@@ -448,6 +495,9 @@
 
     }
 
+    // Finalmente, calculo el total de todo
+    calcularTodoTotal();
+
   }
 
   function agregarProducto(producto) {
@@ -479,6 +529,16 @@
 
   }
 
+  function calcularTodoTotal() {
+    let acumulado = 0;
+
+    // Recorro el arreglo y sumo los totales
+    for (var i = 0; i < productos.length; i++) {
+      acumulado += parseFloat(productos[i].total);
+    }
+    $("#txtTotalTodo").val(acumulado.toFixed(2));
+
+  }
 
   function calcularTotalYSubtotal(cantidad, precio) {
 
@@ -717,59 +777,101 @@
 
   });
 
+
+
   // Script para excel
   $.support.cors = true;
-  var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));
-
   var excelIO = new GC.Spread.Excel.IO();
-  var excelUrl = "./plantillas/formatoGlassgow.xlsx";
 
-  var oReq = new XMLHttpRequest();
-  oReq.open('get', excelUrl, true);
-  oReq.responseType = 'blob';
-  oReq.onload = function () {
-    var blob = oReq.response;
-    excelIO.open(blob, cargarExcel, function (message) {
-      console.log(message);
-    });
-  };
-  oReq.send(null);
+  // Esto es una promesa
+  function leerPlantilla() {
+    var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));
 
-  function cargarExcel(json) {
-    jsonData = json;
-    workbook.fromJSON(json);
-    workbook.setActiveSheet("1");
+    return new Promise((resolve, reject) => {
+
+      var excelUrl = "./plantillas/formatoGlassgowSimple.xlsx";
+
+      var oReq = new XMLHttpRequest();
+      oReq.open('get', excelUrl, true);
+      oReq.responseType = 'blob';
+      oReq.onload = function () {
+        var blob = oReq.response;
+        excelIO.open(blob, (json) => {
+          jsonData = json;
+          workbook.fromJSON(json);
+          workbook.setActiveSheet("1");
+          resolve(workbook);
+        }, function (message) {
+          console.log(message);
+          reject('No se pudo leer')
+        });
+      };
+      oReq.send(null);
+
+    })
 
   }
 
   function generarExcel() {
 
+    // Establece los índices de inicio de las filas y columnas
     let indFilInicio = 10;
     let indColInicio = 0;
 
-    var sheet = workbook.getActiveSheet();
-    
-    // Por cada uno de los productos, lleno los registros del Excel
-    for (var i = 0; i < productos.length; i++) {
-      
-      let producto=productos[i];
-      sheet.addRows(indFilInicio, 0);  
+    // Uso promesas para esperar a que termine de leer la plantila
+    leerPlantilla()
+      .then((workbook) => {
+        var sheet = workbook.getActiveSheet();
 
-      sheet.setValue(indFilInicio, 0, producto.id);
-      sheet.setValue(indFilInicio, 1, producto.cantidad);
-      sheet.setValue(indFilInicio, 2, producto.unidad);
-      sheet.setValue(indFilInicio, 3, producto.descripcion);
-      sheet.setValue(indFilInicio, 4, producto.marca);
-      sheet.setValue(indFilInicio, 5, producto.precio);
-      sheet.setValue(indFilInicio, 6, producto.subtotal);
+        // Por cada uno de los productos, lleno los registros del Excel
+        for (var i = 0; i < productos.length; i++) {
 
-      indFilInicio++;
-    }   
-    guardarExcel();
+          let producto = productos[i];
+
+          sheet.setValue(indFilInicio, 0, producto.id);
+          sheet.setValue(indFilInicio, 1, producto.cantidad);
+          sheet.setValue(indFilInicio, 2, producto.unidad);
+          sheet.setValue(indFilInicio, 3, producto.descripcion);
+          sheet.setValue(indFilInicio, 4, producto.marca);
+          sheet.setValue(indFilInicio, 5, producto.precio);
+          sheet.setValue(indFilInicio, 6, producto.subtotal);
+
+          // Establezco la fórmula para los subtotales de cada registro
+          sheet.setFormula(indFilInicio, 6, `=(B${(indFilInicio + 1)}*F${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
+
+          // Si no es la última iteración, que ya no agregue siguiente fila
+          if (i < productos.length - 1) {
+            // Agrego una nueva fila para la siguiente iteración    
+            sheet.addRows((indFilInicio + 1), 1);
+            // Copio los estilos para la nueva fila
+            sheet.copyTo(indFilInicio, 0, (indFilInicio + 1), 0, 1, 8, GC.Spread.Sheets.CopyToOptions.style);
+          }
+          // Si es la última iteración, que establezca las fórmulas para el subtotal, total e igv
+          else {
+            //sheet.setFormula(indFilInicio, 7, `=(G${(indFilInicio + 1)}+(G${(indFilInicio + 1)}*(${igvSeleccionado}/100)))`, GC.Spread.Sheets.SheetArea.viewport);
+            // Primero, el subtotal
+            sheet.setFormula(indFilInicio + 1, 6, `=SUM(G9:G${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
+
+            // Luego, el IGV
+            sheet.setFormula(indFilInicio + 2, 6, `=${igvSeleccionado}`);
+
+            // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
+            sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 2}/100))`, GC.Spread.Sheets.SheetArea.viewport);
+
+          }
+          indFilInicio++;
+        }
+
+        guardarExcel(workbook);
+      })
+      .catch((error) => {
+        alert(error);
+      })
+
   }
 
-  function guardarExcel() {
-    var fileName = "test";
+  function guardarExcel(workbook) {
+    var fileName = "exportado";
     if (fileName.substr(-5, 5) !== '.xlsx') {
       fileName += '.xlsx';
     }
@@ -784,7 +886,7 @@
     });
   }
 
-  $('#exportar').click(function () {
+  $('#btnExportar').click(function () {
     generarExcel();
   })
 
