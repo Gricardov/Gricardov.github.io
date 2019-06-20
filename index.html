@@ -789,7 +789,7 @@
 
     return new Promise((resolve, reject) => {
 
-      var excelUrl = "https://github.com/Gricardov/Gricardov.github.io/raw/master/plantillas/formatoGlassgow.xlsx";
+      var excelUrl = "plantillas/formatoGlassgowSimple.xlsx";
 
       var oReq = new XMLHttpRequest();
       oReq.open('get', excelUrl, true);
@@ -856,7 +856,7 @@
             sheet.setFormula(indFilInicio + 2, 6, `=${igvSeleccionado}`);
 
             // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
-            sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 2}/100))`, GC.Spread.Sheets.SheetArea.viewport);
+            sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 3}/100))`, GC.Spread.Sheets.SheetArea.viewport);
 
           }
           indFilInicio++;
