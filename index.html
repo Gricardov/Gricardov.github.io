@@ -20,6 +20,7 @@
   <script lang="javascript" src="js/FileSaver/dist/FileSaver.min.js"></script>
   <script type="text/javascript" src="js/gc.spread.sheets.all.10.1.0.min.js"></script>
   <script type="text/javascript" src="js/gc.spread.excelio.10.1.0.min.js"></script>
+  <script lang="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -281,7 +282,7 @@
                           <h3>Glassgow</h3>
                           <p>Presione para generar excel</p>
                           <button id="btnExportar" class='btn btn-primary' style="width:100%">
-                              <i class="fa fa-th"></i> Generar excel</button>
+                            <i class="fa fa-th"></i> Generar excel</button>
                         </div>
                       </div>
                       <div id="menu2" class="tab-pane fade">
@@ -789,30 +790,58 @@
 
     return new Promise((resolve, reject) => {
 
-      var excelUrl = "https://gricardov.github.io/plantillas/formatoGlassgow.xlsx";
+      var excelUrl = "../plantillas/formatoGlassgow.xlsx";
 
-      var oReq = new XMLHttpRequest();
-      oReq.open('get', excelUrl, true);
-      oReq.responseType = 'blob';
-      oReq.onload = function () {
-        var blob = oReq.response;
-        excelIO.open(blob, (json) => {
-          jsonData = json;
-          workbook.fromJSON(json);
-          workbook.setActiveSheet("1");
+      var req = new XMLHttpRequest();
+      req.open("GET", excelUrl, true);
+      req.responseType = "arraybuffer";
+
+      req.onload = function (e) {
+        if (req.status == 200) {
+          var data = new Uint8Array(req.response);
+          var workbook = XLSX.read(data, { type: "array" });
           resolve(workbook);
-        }, function (message) {
-          console.log(message);
-          reject('No se pudo leer')
-        });
-      };
-      oReq.send(null);
+        } else {
+          reject('El servidor ha respondido con estado ' + req.status);
+        }
+
+      }
+      req.send();
 
     })
 
   }
 
+  function add_cell_to_sheet(worksheet, address, value) {
+    /* cell object */
+    var cell = { t: '?', v: value };
+
+    /* assign type */
+    if (typeof value == "string") cell.t = 's'; // string
+    else if (typeof value == "number") cell.t = 'n'; // number
+    else if (value === true || value === false) cell.t = 'b'; // boolean
+    else if (value instanceof Date) cell.t = 'd';
+    else throw new Error("cannot store value");
+
+    /* add to worksheet, overwriting a cell if it exists */
+    worksheet[address] = cell;
+
+    /* find the cell range */
+    var range = XLSX.utils.decode_range(worksheet['!ref']);
+    var addr = XLSX.utils.decode_cell(address);
+
+    /* extend the range to include the new cell */
+    if (range.s.c > addr.c) range.s.c = addr.c;
+    if (range.s.r > addr.r) range.s.r = addr.r;
+    if (range.e.c < addr.c) range.e.c = addr.c;
+    if (range.e.r < addr.r) range.e.r = addr.r;
+
+    /* update range */
+    worksheet['!ref'] = XLSX.utils.encode_range(range);
+  }
+
   function generarExcel() {
+
 
     // Establece los índices de inicio de las filas y columnas
     let indFilInicio = 10;
@@ -821,48 +850,50 @@
     // Uso promesas para esperar a que termine de leer la plantila
     leerPlantilla()
       .then((workbook) => {
-        var sheet = workbook.getActiveSheet();
-
-        // Por cada uno de los productos, lleno los registros del Excel
-        for (var i = 0; i < productos.length; i++) {
-
-          let producto = productos[i];
-
-          sheet.setValue(indFilInicio, 0, producto.id);
-          sheet.setValue(indFilInicio, 1, producto.cantidad);
-          sheet.setValue(indFilInicio, 2, producto.unidad);
-          sheet.setValue(indFilInicio, 3, producto.descripcion);
-          sheet.setValue(indFilInicio, 4, producto.marca);
-          sheet.setValue(indFilInicio, 5, producto.precio);
-          sheet.setValue(indFilInicio, 6, producto.subtotal);
-
-          // Establezco la fórmula para los subtotales de cada registro
-          sheet.setFormula(indFilInicio, 6, `=(B${(indFilInicio + 1)}*F${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
-
-          // Si no es la última iteración, que ya no agregue siguiente fila
-          if (i < productos.length - 1) {
-            // Agrego una nueva fila para la siguiente iteración    
-            sheet.addRows((indFilInicio + 1), 1);
-            // Copio los estilos para la nueva fila
-            sheet.copyTo(indFilInicio, 0, (indFilInicio + 1), 0, 1, 8, GC.Spread.Sheets.CopyToOptions.style);
-          }
-          // Si es la última iteración, que establezca las fórmulas para el subtotal, total e igv
-          else {
-            //sheet.setFormula(indFilInicio, 7, `=(G${(indFilInicio + 1)}+(G${(indFilInicio + 1)}*(${igvSeleccionado}/100)))`, GC.Spread.Sheets.SheetArea.viewport);
-            // Primero, el subtotal
-            sheet.setFormula(indFilInicio + 1, 6, `=SUM(G9:G${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
-
-            // Luego, el IGV
-            sheet.setFormula(indFilInicio + 2, 6, `=${igvSeleccionado}`);
-
-            // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
-            sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 3}/100))`, GC.Spread.Sheets.SheetArea.viewport);
-
-          }
-          indFilInicio++;
-        }
-
-        guardarExcel(workbook);
+        //add_cell_to_sheet(workbook.Sheets.SheetJS, "F6", 12345);
+        XLSX.writeFile('sheetjs-new.xlsx', workbook);
+        /* var sheet = workbook.getActiveSheet();
+ 
+         // Por cada uno de los productos, lleno los registros del Excel
+         for (var i = 0; i < productos.length; i++) {
+ 
+           let producto = productos[i];
+ 
+           sheet.setValue(indFilInicio, 0, producto.id);
+           sheet.setValue(indFilInicio, 1, producto.cantidad);
+           sheet.setValue(indFilInicio, 2, producto.unidad);
+           sheet.setValue(indFilInicio, 3, producto.descripcion);
+           sheet.setValue(indFilInicio, 4, producto.marca);
+           sheet.setValue(indFilInicio, 5, producto.precio);
+           sheet.setValue(indFilInicio, 6, producto.subtotal);
+ 
+           // Establezco la fórmula para los subtotales de cada registro
+           sheet.setFormula(indFilInicio, 6, `=(B${(indFilInicio + 1)}*F${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
+ 
+           // Si no es la última iteración, que ya no agregue siguiente fila
+           if (i < productos.length - 1) {
+             // Agrego una nueva fila para la siguiente iteración    
+             sheet.addRows((indFilInicio + 1), 1);
+             // Copio los estilos para la nueva fila
+             sheet.copyTo(indFilInicio, 0, (indFilInicio + 1), 0, 1, 8, GC.Spread.Sheets.CopyToOptions.style);
+           }
+           // Si es la última iteración, que establezca las fórmulas para el subtotal, total e igv
+           else {
+             //sheet.setFormula(indFilInicio, 7, `=(G${(indFilInicio + 1)}+(G${(indFilInicio + 1)}*(${igvSeleccionado}/100)))`, GC.Spread.Sheets.SheetArea.viewport);
+             // Primero, el subtotal
+             sheet.setFormula(indFilInicio + 1, 6, `=SUM(G9:G${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
+ 
+             // Luego, el IGV
+             sheet.setFormula(indFilInicio + 2, 6, `=${igvSeleccionado}`);
+ 
+             // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
+             sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 3}/100))`, GC.Spread.Sheets.SheetArea.viewport);
+ 
+           }
+           indFilInicio++;
+         }
+ 
+         guardarExcel(workbook);*/
       })
       .catch((error) => {
         alert(error);
@@ -891,6 +922,6 @@
   })
 
 
-
+  /*https://aymkdn.github.io/ExcelPlus/*/
   /*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
 </script>
