@@ -19,7 +19,7 @@
   <script lang="javascript" src="js/FileSaver/dist/FileSaver.min.js"></script>
 
   <!--exceljs-->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/exceljs@1.12.1/dist/exceljs.min.js"></script>
+  <script type="text/javascript" src="js/exceljs.min.js"></script>
 
 </head>
 
@@ -829,7 +829,7 @@
         const ws = workbook.getWorksheet('1');
 
         ws.getCell('C11').value = 'Hello, World!';
-        ws.getCell('C12').value = '=7+2';
+        ws.getCell('C12').value = '=7+3';
 
         guardarExcel(workbook);
 
