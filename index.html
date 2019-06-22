@@ -819,8 +819,8 @@
 
 
     // Establece los índices de inicio de las filas y columnas
-    let indFilInicio = 10;
-    let indColInicio = 0;
+    let filInicio = 11;
+    let colInicio = 1;
 
     // Uso promesas para esperar a que termine de leer la plantila
     leerPlantilla()
@@ -828,67 +828,48 @@
 
         const ws = workbook.getWorksheet('1');
 
-        ws.getCell('C11').value = 'Hello, World!';
-        ws.getCell('C12').value = '=7+3';
+        // Por cada uno de los productos, lleno los registros del Excel
+        for (var i = 0; i < productos.length; i++) {
+
+          let producto = productos[i];
+          ws.getCell(`A${filInicio}`).value = producto.id;
+          ws.getCell(`B${filInicio}`).value = producto.cantidad;
+          ws.getCell(`C${filInicio}`).value = producto.unidad;
+          ws.getCell(`D${filInicio}`).value = producto.descripcion;
+          ws.getCell(`E${filInicio}`).value = producto.marca;
+          ws.getCell(`F${filInicio}`).value = producto.precio;
+          ws.getCell(`G${filInicio}`).value = producto.subtotal;
+
+          // Establezco la fórmula para los subtotales de cada registro
+          ws.getCell(`G${filInicio}`).value = { formula: `B${(filInicio)}*F${(filInicio)}` };
+          
+          // Si no es la última iteración, que ya no agregue siguiente fila
+          if (i < productos.length - 1) {
+            // Agrego una nueva fila para la siguiente iteración
+            var r1 = ["", "", "", "", "","",""];
+            var r2 = ["", "", "", "", "","",""];
+            ws.spliceRows(filInicio, 1, r1, r2);
+            // Copio los estilos para la nueva fila
+            //sheet.copyTo(indFilInicio, 0, (indFilInicio + 1), 0, 1, 8, GC.Spread.Sheets.CopyToOptions.style);
+          }
+          // Si es la última iteración, que establezca las fórmulas para el subtotal, total e igv
+          else {
+            //sheet.setFormula(indFilInicio, 7, `=(G${(indFilInicio + 1)}+(G${(indFilInicio + 1)}*(${igvSeleccionado}/100)))`, GC.Spread.Sheets.SheetArea.viewport);
+            // Primero, el subtotal
+            ws.getCell(`G${filInicio+1}`).value = { formula: `=SUM(G11:G${(filInicio)})` };
+
+            // Luego, el IGV
+            ws.getCell(`G${filInicio+2}`).value = { formula: `=${igvSeleccionado}` };
+
+            // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
+            //sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 3}/100))`, GC.Spread.Sheets.SheetArea.viewport);
+
+          }
+          
+          filInicio++;
+        }
 
         guardarExcel(workbook);
-
-        /*var worksheet = workbook.getWorksheet('1');
-        worksheet.addRow({
-          id: i,
-          name: theName,
-          etc: someOtherDetail
-        }).commit();*/
-
-        //var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
-        //workbook.xlsx.write('abc')
-        //var wbout = XLSX.write(workbook, wopts);
-        /* the saveAs call downloads a file on the local machine */
-        //saveAs(new Blob([s2ab(workbook)], { type: "" }), "test.xlsx")
-        //add_cell_to_sheet(workbook.Sheets.SheetJS, "F6", 12345);
-
-        /* var sheet = workbook.getActiveSheet();
- 
-         // Por cada uno de los productos, lleno los registros del Excel
-         for (var i = 0; i < productos.length; i++) {
- 
-           let producto = productos[i];
- 
-           sheet.setValue(indFilInicio, 0, producto.id);
-           sheet.setValue(indFilInicio, 1, producto.cantidad);
-           sheet.setValue(indFilInicio, 2, producto.unidad);
-           sheet.setValue(indFilInicio, 3, producto.descripcion);
-           sheet.setValue(indFilInicio, 4, producto.marca);
-           sheet.setValue(indFilInicio, 5, producto.precio);
-           sheet.setValue(indFilInicio, 6, producto.subtotal);
- 
-           // Establezco la fórmula para los subtotales de cada registro
-           sheet.setFormula(indFilInicio, 6, `=(B${(indFilInicio + 1)}*F${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
- 
-           // Si no es la última iteración, que ya no agregue siguiente fila
-           if (i < productos.length - 1) {
-             // Agrego una nueva fila para la siguiente iteración    
-             sheet.addRows((indFilInicio + 1), 1);
-             // Copio los estilos para la nueva fila
-             sheet.copyTo(indFilInicio, 0, (indFilInicio + 1), 0, 1, 8, GC.Spread.Sheets.CopyToOptions.style);
-           }
-           // Si es la última iteración, que establezca las fórmulas para el subtotal, total e igv
-           else {
-             //sheet.setFormula(indFilInicio, 7, `=(G${(indFilInicio + 1)}+(G${(indFilInicio + 1)}*(${igvSeleccionado}/100)))`, GC.Spread.Sheets.SheetArea.viewport);
-             // Primero, el subtotal
-             sheet.setFormula(indFilInicio + 1, 6, `=SUM(G9:G${(indFilInicio + 1)})`, GC.Spread.Sheets.SheetArea.viewport);
- 
-             // Luego, el IGV
-             sheet.setFormula(indFilInicio + 2, 6, `=${igvSeleccionado}`);
- 
-             // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
-             sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 3}/100))`, GC.Spread.Sheets.SheetArea.viewport);
- 
-           }
-           indFilInicio++;
-         }
- 
-         guardarExcel(workbook);*/
       })
       .catch((error) => {
         alert(error);
