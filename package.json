@@ -1,0 +1,22 @@
+{
+  "name": "gricardov.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gricardov/Gricardov.github.io.git"
+  },
+  "author": "Gricardov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Gricardov/Gricardov.github.io/issues"
+  },
+  "homepage": "https://github.com/Gricardov/Gricardov.github.io#readme",
+  "dependencies": {
+    "exceljs": "^1.12.2"
+  }
+}

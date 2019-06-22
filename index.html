@@ -13,14 +13,14 @@
   <link rel="stylesheet" href="css/all.css" />
 
   <script lang="javascript" src="js/jquery.page.min.js"></script>
-
   <script lang="javascript" src="js/js-xlsx/dist/shim.min.js"></script>
   <script lang="javascript" src="js/js-xlsx/dist/xlsx.full.min.js"></script>
 
   <script lang="javascript" src="js/FileSaver/dist/FileSaver.min.js"></script>
-  <script type="text/javascript" src="js/gc.spread.sheets.all.10.1.0.min.js"></script>
-  <script type="text/javascript" src="js/gc.spread.excelio.10.1.0.min.js"></script>
-  <script lang="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.14.3/xlsx.full.min.js"></script>
+
+  <!--exceljs-->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/exceljs@1.12.1/dist/exceljs.min.js"></script>
+
 </head>
 
 <body>
@@ -347,7 +347,6 @@
 </body>
 
 <script>
-
   // Los valores predeterminados
   const RAZONSOCIAL = "Razón social predeterminada";
   const RUC = "123456789";
@@ -782,25 +781,29 @@
 
   // Script para excel
   $.support.cors = true;
-  var excelIO = new GC.Spread.Excel.IO();
+  //var excelIO = new GC.Spread.Excel.IO();
+
+  var workbook = new ExcelJS.Workbook();
 
   // Esto es una promesa
   function leerPlantilla() {
-    var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));
+    //var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));
 
     return new Promise((resolve, reject) => {
 
-      var excelUrl = "../plantillas/formatoGlassgow.xlsx";
+      var excelUrl = "../plantillas/formatoGlassgowSimple.xlsx";
 
       var req = new XMLHttpRequest();
-      req.open("GET", excelUrl, true);
+      req.open("GET", excelUrl, true);//
       req.responseType = "arraybuffer";
 
       req.onload = function (e) {
         if (req.status == 200) {
-          var data = new Uint8Array(req.response);
-          var workbook = XLSX.read(data, { type: "array" });
-          resolve(workbook);
+          var data = req.response;
+
+          workbook.xlsx.load(data).then(function (workbook) {
+            resolve(workbook);
+          })
         } else {
           reject('El servidor ha respondido con estado ' + req.status);
         }
@@ -810,34 +813,6 @@
 
     })
 
-  }
-
-  function add_cell_to_sheet(worksheet, address, value) {
-    /* cell object */
-    var cell = { t: '?', v: value };
-
-    /* assign type */
-    if (typeof value == "string") cell.t = 's'; // string
-    else if (typeof value == "number") cell.t = 'n'; // number
-    else if (value === true || value === false) cell.t = 'b'; // boolean
-    else if (value instanceof Date) cell.t = 'd';
-    else throw new Error("cannot store value");
-
-    /* add to worksheet, overwriting a cell if it exists */
-    worksheet[address] = cell;
-
-    /* find the cell range */
-    var range = XLSX.utils.decode_range(worksheet['!ref']);
-    var addr = XLSX.utils.decode_cell(address);
-
-    /* extend the range to include the new cell */
-    if (range.s.c > addr.c) range.s.c = addr.c;
-    if (range.s.r > addr.r) range.s.r = addr.r;
-    if (range.e.c < addr.c) range.e.c = addr.c;
-    if (range.e.r < addr.r) range.e.r = addr.r;
-
-    /* update range */
-    worksheet['!ref'] = XLSX.utils.encode_range(range);
   }
 
   function generarExcel() {
@@ -850,8 +825,28 @@
     // Uso promesas para esperar a que termine de leer la plantila
     leerPlantilla()
       .then((workbook) => {
+
+        const ws = workbook.getWorksheet('1');
+
+        ws.getCell('C11').value = 'Hello, World!';
+        ws.getCell('C12').value = '=7+2';
+
+        guardarExcel(workbook);
+
+        /*var worksheet = workbook.getWorksheet('1');
+        worksheet.addRow({
+          id: i,
+          name: theName,
+          etc: someOtherDetail
+        }).commit();*/
+
+        //var wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
+        //workbook.xlsx.write('abc')
+        //var wbout = XLSX.write(workbook, wopts);
+        /* the saveAs call downloads a file on the local machine */
+        //saveAs(new Blob([s2ab(workbook)], { type: "" }), "test.xlsx")
         //add_cell_to_sheet(workbook.Sheets.SheetJS, "F6", 12345);
-        XLSX.writeFile('sheetjs-new.xlsx', workbook);
+
         /* var sheet = workbook.getActiveSheet();
  
          // Por cada uno de los productos, lleno los registros del Excel
@@ -902,19 +897,23 @@
   }
 
   function guardarExcel(workbook) {
-    var fileName = "exportado";
-    if (fileName.substr(-5, 5) !== '.xlsx') {
-      fileName += '.xlsx';
+    /*const options = {
+          base64: true,
+        };
+        */
+    var nombreArchivo = "exportado";
+    if (nombreArchivo.substr(-5, 5) !== '.xlsx') {
+      nombreArchivo += '.xlsx';
     }
-    var json = JSON.stringify(workbook.toJSON());
-
-    excelIO.save(json, function (blob) {
-      saveAs(blob, fileName);
-    }, function (e) {
-      if (e.errorCode === 1) {
-        alert(e.errorMessage);
-      }
-    });
+    workbook.xlsx
+      .writeBuffer(/*options*/)
+      .then(buffer => {
+        saveAs(new Blob([buffer], { type: "" }), nombreArchivo)
+      })
+      .catch(error => {
+        alert(JSON.stringify(error))
+        throw error;
+      });
   }
 
   $('#btnExportar').click(function () {
@@ -922,6 +921,6 @@
   })
 
 
-  /*https://aymkdn.github.io/ExcelPlus/*/
+  /*https://aymkdn.github.io/ExcelPlus/*
   /*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
 </script>
