@@ -785,13 +785,132 @@
 
   var workbook = new ExcelJS.Workbook();
 
+  // Esto pone borde, valor y fondo a la celda
+  function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, esNegrita) {
+
+    worksheet.getCell(celda).border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+
+    // Si le paso un color de fondo, que lo aplique
+    if (colorFondo) {
+      worksheet.getCell(celda).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: colorFondo }
+      };
+    }
+    if (valor) {
+      worksheet.getCell(celda).value = {
+        "richText": [
+          {
+            "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
+            "text": valor
+          }
+        ]
+      };
+    }
+
+
+  }
+
+  function establecerFormulaCelda(worksheet, celda, formula, colorFondo) {
+    worksheet.getCell(celda).value = { formula: formula };
+    worksheet.getCell(celda).border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
+    };
+    // Si le paso un color de fondo, que lo aplique
+    if (colorFondo) {
+      worksheet.getCell(celda).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: colorFondo }
+      };
+    }
+  }
+
+  function unirCeldas(worksheet, inicio, fin, valor, conBorde, colorFuente, colorFondo, esNegrita) {
+
+    worksheet.mergeCells(inicio + ":" + fin);
+
+    if (valor) {
+      worksheet.getCell(inicio).value = {
+        "richText": [
+          {
+            "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
+            "text": valor
+          }
+        ]
+      };
+    }
+
+    if (conBorde) {
+      worksheet.getCell(inicio).border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+    }
+
+    if (colorFondo) {
+      worksheet.getCell(inicio).fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: colorFondo }
+      };
+    }
+
+    worksheet.getCell(inicio).alignment = { vertical: 'middle', horizontal: 'left' };
+
+
+  }
+
+  function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
+    unirCeldas(worksheet, `A${filInicio + 3}`, `G${filInicio + 3}`)
+    unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true)
+
+    establecerValorCelda(worksheet, `D${filInicio + 4}`, "CONTADO COMERCIAL")
+    establecerValorCelda(worksheet, `D${filInicio + 5}`, "SOLES")
+    establecerValorCelda(worksheet, `D${filInicio + 6}`, "INCLUYE IGV")
+    establecerValorCelda(worksheet, `D${filInicio + 7}`, "BCP SOLES...")
+    establecerValorCelda(worksheet, `D${filInicio + 8}`, "5 DÍAS DESPUÉS")
+    establecerValorCelda(worksheet, `D${filInicio + 9}`, "1 AÑO")
+
+    unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", true)
+
+    /*leerFirmaGlassgow().then(data => {
+      var firmaGlassgow = workbook.addImage({
+        base64: data,
+        extension: 'jpeg',
+        base64filename: 'cora.png'
+      });
+      worksheet.addImage(firmaGlassgow, "A23:C25");
+      //`E${filInicio + 4}:G${filInicio + 9}`
+    })*/
+
+
+
+  }
+
   // Esto es una promesa
   function leerPlantilla() {
-    //var workbook = new GC.Spread.Sheets.Workbook(document.getElementById("excel"));
 
     return new Promise((resolve, reject) => {
 
-      var excelUrl = "../plantillas/formatoGlassgowSimple.xlsx";
+      var excelUrl = "../plantillas/formatoGlassgowSimple2.xlsx";
 
       var req = new XMLHttpRequest();
       req.open("GET", excelUrl, true);//
@@ -815,6 +934,32 @@
 
   }
 
+  function leerFirmaGlassgow() {
+    return new Promise((resolve, reject) => {
+
+      var imgUrl = "../plantillas/firmaGlassgow.png";
+
+      var req = new XMLHttpRequest();
+      req.open("GET", imgUrl, true);//
+      req.responseType = "arraybuffer";
+
+      req.onload = function (e) {
+        if (req.status == 200) {
+          var blob = new Uint8Array(req.response);
+          //encode with base64
+          var uri = "data:image/jpeg;base64," + Base64.encode(blob);
+          resolve(uri);
+
+        } else {
+          reject('El servidor ha respondido con estado ' + req.status);
+        }
+
+      }
+      req.send();
+
+    })
+  }
+
   function generarExcel() {
 
 
@@ -832,42 +977,35 @@
         for (var i = 0; i < productos.length; i++) {
 
           let producto = productos[i];
-          ws.getCell(`A${filInicio}`).value = producto.id;
-          ws.getCell(`B${filInicio}`).value = producto.cantidad;
-          ws.getCell(`C${filInicio}`).value = producto.unidad;
-          ws.getCell(`D${filInicio}`).value = producto.descripcion;
-          ws.getCell(`E${filInicio}`).value = producto.marca;
-          ws.getCell(`F${filInicio}`).value = producto.precio;
-          ws.getCell(`G${filInicio}`).value = producto.subtotal;
+          establecerValorCelda(ws, `A${filInicio}`, producto.id);
+          establecerValorCelda(ws, `B${filInicio}`, producto.cantidad);
+          establecerValorCelda(ws, `C${filInicio}`, producto.unidad);
+          establecerValorCelda(ws, `D${filInicio}`, producto.descripcion);
+          establecerValorCelda(ws, `E${filInicio}`, producto.marca);
+          establecerValorCelda(ws, `F${filInicio}`, producto.precio);
+          establecerValorCelda(ws, `G${filInicio}`, producto.subtotal);
 
           // Establezco la fórmula para los subtotales de cada registro
-          ws.getCell(`G${filInicio}`).value = { formula: `B${(filInicio)}*F${(filInicio)}` };
-          
-          // Si no es la última iteración, que ya no agregue siguiente fila
-          if (i < productos.length - 1) {
-            // Agrego una nueva fila para la siguiente iteración
-            var r1 = ["", "", "", "", "","",""];
-            var r2 = ["", "", "", "", "","",""];
-            ws.spliceRows(filInicio, 1, r1, r2);
-            // Copio los estilos para la nueva fila
-            //sheet.copyTo(indFilInicio, 0, (indFilInicio + 1), 0, 1, 8, GC.Spread.Sheets.CopyToOptions.style);
-          }
-          // Si es la última iteración, que establezca las fórmulas para el subtotal, total e igv
-          else {
-            //sheet.setFormula(indFilInicio, 7, `=(G${(indFilInicio + 1)}+(G${(indFilInicio + 1)}*(${igvSeleccionado}/100)))`, GC.Spread.Sheets.SheetArea.viewport);
-            // Primero, el subtotal
-            ws.getCell(`G${filInicio+1}`).value = { formula: `=SUM(G11:G${(filInicio)})` };
+          establecerFormulaCelda(ws, `G${filInicio}`, `B${(filInicio)}*F${(filInicio)}`)
 
-            // Luego, el IGV
-            ws.getCell(`G${filInicio+2}`).value = { formula: `=${igvSeleccionado}` };
-
-            // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
-            //sheet.setFormula(indFilInicio + 3, 6, `=(G${(indFilInicio + 2)}+(G${(indFilInicio + 2)}*(G${indFilInicio + 3}/100))`, GC.Spread.Sheets.SheetArea.viewport);
-
-          }
-          
           filInicio++;
         }
+
+        // Para los totales de todos los registros
+        // Primero, el subtotal
+        establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true);
+        establecerFormulaCelda(ws, `G${filInicio}`, `=SUM(G11:G${(filInicio - 1)})`)
+
+        // Luego, el IGV
+        establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true);
+        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=${igvSeleccionado}`)
+
+        // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
+        establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true);
+        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=(G${filInicio}+(G${filInicio}*(G${filInicio + 1}/100)))`)
+
+        // Luego, establezco la parte final para la plantilla de Glassgow
+        agregarFinPlantillaGlassgow(ws, filInicio, workbook);
 
         guardarExcel(workbook);
       })
@@ -901,6 +1039,40 @@
     generarExcel();
   })
 
+  // Clase utilitaria
+  var Base64 = {
+    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+    // public method for encoding
+    encode: function (input) {
+      var output = "";
+      var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+      var i = 0;
+      //input = Base64._utf8_encode(input); //comment out to encode binary file(like image)
+
+      while (i < input.length) {
+
+        chr1 = input[i++];
+        chr2 = input[i++];
+        chr3 = input[i++];
+
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
+
+        if (isNaN(chr2)) {
+          enc3 = enc4 = 64;
+        } else if (isNaN(chr3)) {
+          enc4 = 64;
+        }
+        output = output +
+          Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
+          Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
+      }
+      return output;
+    }
+  }
 
   /*https://aymkdn.github.io/ExcelPlus/*
   /*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
