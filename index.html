@@ -158,25 +158,28 @@
 
 
                 <div class='form-group'>
-                  <label class='control-label col-md-2 col-md-offset-2' for='txtSubtotal'>Subtotal</label>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtPrecioConIGV'>Total con IGV</label>
                   <div class='col-md-6'>
-                    <input class='form-control' id='txtSubtotal' type="number" disabled>
+                    <input class='form-control' id='txtPrecioConIGV' type="number" disabled>
                   </div>
                 </div>
 
                 <div class='form-group'>
-                  <label class='control-label col-md-2 col-md-offset-2' for='txtIGV'>IGV</label>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtIGVCalculado'>IGV calculado</label>
+                  <div class='col-md-2'>
+                    <input class='form-control' id='txtIGVCalculado' type="number" disabled>
+                  </div>
+                  <label class='control-label col-md-2' for='txtIGV'>Porcentaje IGV</label>
                   <div class='col-md-2'>
                     <input class='form-control' id='txtIGV' type="number" disabled>
                   </div>
-                  <label class='control-label col-md-1' for='txtIGV'>%</label>
 
                 </div>
 
                 <div class='form-group'>
-                  <label class='control-label col-md-2 col-md-offset-2' for='txtTotal'>Total</label>
+                  <label class='control-label col-md-2 col-md-offset-2' for='txtPrecioSinIGV'>Total sin IGV</label>
                   <div class='col-md-6'>
-                    <input class='form-control' id='txtTotal' type="number" disabled>
+                    <input class='form-control' id='txtPrecioSinIGV' type="number" disabled>
                   </div>
 
                 </div>
@@ -233,10 +236,13 @@
                             Precio unidad
                           </div>
                           <div class="celda-tabla">
-                            Subtotal
+                            Total con IGV
                           </div>
                           <div class="celda-tabla">
-                            Total
+                            IGV calculado
+                          </div>
+                          <div class="celda-tabla">
+                            Total sin IGV
                           </div>
                           <div class="celda-tabla">
 
@@ -395,8 +401,9 @@
       $("#cboUnidad").val(producto.unidad);
       $("#txtCantidad").val(producto.cantidad);
       $("#txtPrecio").val(producto.precio);
-      $("#txtSubtotal").val(producto.subtotal);
-      $("#txtTotal").val(producto.total);
+      $("#txtPrecioConIGV").val(producto.precioConIGV);
+      $("#txtIGVCalculado").val(producto.igvCalculado);
+      $("#txtPrecioSinIGV").val(producto.precioSinIGV);
 
       // Y enfoco el txtDescripcion
       $("#txtDescripcion").focus();
@@ -411,8 +418,9 @@
     $("#cboUnidad").prop('selectedIndex', 0);
     $("#txtCantidad").val("");
     $("#txtPrecio").val("");
-    $("#txtSubtotal").val("");
-    $("#txtTotal").val("");
+    $("#txtPrecioSinIGV").val("");
+    $("#txtIGVCalculado").val("");
+    $("#txtPrecioConIGV").val("");
 
   }
 
@@ -443,10 +451,13 @@
                             Precio unidad
                           </div>
                           <div class="celda-tabla">
-                            Subtotal
+                            Total con IGV
                           </div>
                           <div class="celda-tabla">
-                            Total
+                            IGV calculado
+                          </div>
+                          <div class="celda-tabla">
+                            Total sin IGV
                           </div>
                           <div class="celda-tabla">                            
                           </div>
@@ -479,10 +490,13 @@
                             ${producto.precio}
                           </div>
                           <div class="celda-tabla">
-                            ${producto.subtotal}
+                            ${producto.precioConIGV}
                           </div>
                           <div class="celda-tabla">
-                            ${producto.total}
+                            ${producto.igvCalculado}
+                          </div>
+                          <div class="celda-tabla">
+                            ${producto.precioSinIGV}
                           </div>
                           <div class="celda-tabla editarRegistro" style="cursor:pointer;" data-id=${producto.id}>
                             <i class="fa fa-edit"></i> Editar
@@ -534,18 +548,20 @@
 
     // Recorro el arreglo y sumo los totales
     for (var i = 0; i < productos.length; i++) {
-      acumulado += parseFloat(productos[i].total);
+      acumulado += parseFloat(productos[i].precioConIGV);
     }
     $("#txtTotalTodo").val(acumulado.toFixed(2));
 
   }
 
-  function calcularTotalYSubtotal(cantidad, precio) {
+  function calcularPrecioConIGVSinIGV(cantidad, precio) {
 
-    let subTotal = cantidad * precio;
+    let precioConIGV = parseFloat(cantidad * precio).toFixed(2);
+    let precioSinIGV = parseFloat((precioConIGV*100)/(100+igvSeleccionado)).toFixed(2);
+    $("#txtPrecioConIGV").val(precioConIGV);
+    $("#txtPrecioSinIGV").val(precioSinIGV);
+    $("#txtIGVCalculado").val(parseFloat(precioConIGV-precioSinIGV).toFixed(2));
 
-    $("#txtSubtotal").val(subTotal);
-    $("#txtTotal").val((subTotal) + ((igvSeleccionado / 100) * (subTotal)));
   }
 
   // Hago los cálculos apenas cambie un campo
@@ -553,7 +569,7 @@
     let cantidad = $("#txtCantidad").val();
     let precio = $("#txtPrecio").val();
     if (!isNaN(cantidad) && !isNaN(precio)) {
-      calcularTotalYSubtotal(cantidad, precio);
+      calcularPrecioConIGVSinIGV(cantidad, precio);
     }
 
   });
@@ -562,7 +578,7 @@
     let cantidad = $("#txtCantidad").val();
     let precio = $("#txtPrecio").val();
     if (!isNaN(cantidad) && !isNaN(precio)) {
-      calcularTotalYSubtotal(cantidad, precio);
+      calcularPrecioConIGVSinIGV(cantidad, precio);
     }
 
   });
@@ -573,13 +589,14 @@
     let descripcion = $("#txtDescripcion").val();
     let marca = $("#cboMarca").val();
     let unidad = $("#cboUnidad").val();
-    let cantidad = $("#txtCantidad").val();
-    let precio = $("#txtPrecio").val();
-    let subtotal = $("#txtSubtotal").val();
-    let total = $("#txtTotal").val();
+    let cantidad = parseInt($("#txtCantidad").val(),10);
+    let precio = parseFloat($("#txtPrecio").val());
+    let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
+    let igvCalculado = parseFloat($("#txtIGVCalculado").val());
+    let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
 
     // Primero, verifico si hay campos vacíos 
-    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && subtotal != "" && total != "") {
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioSinIGV != "" && precioConIGV != "") {
       // Si todo está bien, que se agregue al arreglo
       $('#mensajeForm2').empty();
 
@@ -590,8 +607,9 @@
       producto.unidad = unidad;
       producto.cantidad = cantidad;
       producto.precio = precio;
-      producto.subtotal = subtotal;
-      producto.total = total;
+      producto.precioSinIGV = precioSinIGV;
+      producto.igvCalculado = igvCalculado;
+      producto.precioConIGV = precioConIGV;
       agregarProducto(producto);
 
     } else {
@@ -608,13 +626,14 @@
     let descripcion = $("#txtDescripcion").val();
     let marca = $("#cboMarca").val();
     let unidad = $("#cboUnidad").val();
-    let cantidad = $("#txtCantidad").val();
-    let precio = $("#txtPrecio").val();
-    let subtotal = $("#txtSubtotal").val();
-    let total = $("#txtTotal").val();
+    let cantidad = parseInt($("#txtCantidad").val(),10);
+    let precio = parseFloat($("#txtPrecio").val());
+    let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
+    let igvCalculado = parseFloat($("#txtIGVCalculado").val());
+    let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
 
     // Primero, verifico si hay campos vacíos 
-    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && subtotal != "" && total != "") {
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioConIGV != "" && precioSinIGV != "") {
       // Si todo está bien, que se agregue al arreglo
       $('#mensajeForm2').empty();
 
@@ -625,8 +644,9 @@
       producto.unidad = unidad;
       producto.cantidad = cantidad;
       producto.precio = precio;
-      producto.subtotal = subtotal;
-      producto.total = total;
+      producto.precioConIGV = precioConIGV;
+      producto.igvCalculado = igvCalculado;
+      producto.precioSinIGV = precioSinIGV;
       modificarProducto(producto);
       limpiarCampos();
       // Deshabilito el btnActualizar, eliminar y habilito el agregar
@@ -738,7 +758,7 @@
     $('#mensajeForm1').empty();
 
     // Guardo el IGV según el elegido
-    igvSeleccionado = $('#txtConsiderarIGV').val();
+    igvSeleccionado = parseInt($('#txtConsiderarIGV').val(),10);
 
     // Muestro el IGV guardado
     $('#txtIGV').val(igvSeleccionado);
@@ -983,26 +1003,28 @@
           establecerValorCelda(ws, `D${filInicio}`, producto.descripcion);
           establecerValorCelda(ws, `E${filInicio}`, producto.marca);
           establecerValorCelda(ws, `F${filInicio}`, producto.precio);
-          establecerValorCelda(ws, `G${filInicio}`, producto.subtotal);
+          //establecerValorCelda(ws, `G${filInicio}`, producto.precioConIGV);
 
-          // Establezco la fórmula para los subtotales de cada registro
+          // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
           establecerFormulaCelda(ws, `G${filInicio}`, `B${(filInicio)}*F${(filInicio)}`)
 
           filInicio++;
         }
 
         // Para los totales de todos los registros
-        // Primero, el subtotal
-        establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true);
-        establecerFormulaCelda(ws, `G${filInicio}`, `=SUM(G11:G${(filInicio - 1)})`)
-
-        // Luego, el IGV
-        establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true);
-        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=${igvSeleccionado}`)
-
-        // Finalmente, el total (Multiplico subtotal+(subtotal*(igvSeleccionado/100)))
+        // Primero, el total (Suma simple)
         establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true);
-        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=(G${filInicio}+(G${filInicio}*(G${filInicio + 1}/100)))`)
+        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=SUM(G11:G${(filInicio - 1)})`)
+
+        // Luego, el subtotal (precioConIGV*100)/(100+igvSeleccionado)
+        establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true);
+        establecerFormulaCelda(ws, `G${filInicio}`, `=((G${filInicio + 2}*100)/(100+${igvSeleccionado}))`)
+
+        // Luego, el IGV (total-subtotal)
+        establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true);
+        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=G${filInicio + 2}-G${filInicio}`)
+
+        
 
         // Luego, establezco la parte final para la plantilla de Glassgow
         agregarFinPlantillaGlassgow(ws, filInicio, workbook);
