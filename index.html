@@ -278,7 +278,7 @@
                     <ul class="nav nav-tabs row">
                       <li class="col-md-4 active"><a data-toggle="tab" href="#menu1">Glassgow</a></li>
                       <li class="col-md-4"><a data-toggle="tab" href="#menu2">Lineas hospitalarias</a></li>
-                      <li class="col-md-4"><a data-toggle="tab" href="#menu3">Otro formato</a></li>
+                      <li class="col-md-4"><a data-toggle="tab" href="#menu3">Negociaciones Advance</a></li>
                     </ul>
 
                     <div class="tab-content">
@@ -287,7 +287,7 @@
                         <div class="container">
                           <h3>Glassgow</h3>
                           <p>Presione para generar excel</p>
-                          <button id="btnExportar" class='btn btn-primary' style="width:100%">
+                          <button id="btnExportarGlassgow" class='btn btn-primary' style="width:100%">
                             <i class="fa fa-th"></i> Generar excel</button>
                         </div>
                       </div>
@@ -296,14 +296,18 @@
 
                           <h3>Lineas hospitalarias</h3>
                           <p>Presione para generar excel</p>
+                          <button id="btnExportarLH" class='btn btn-warning' style="width:100%">
+                            <i class="fa fa-th"></i> Generar excel</button>
                         </div>
 
                       </div>
                       <div id="menu3" class="tab-pane fade">
                         <div class="container">
 
-                          <h3>Otro formato</h3>
+                          <h3>Negociaciones Advance</h3>
                           <p>Presione para generar excel</p>
+                          <button id="btnExportarNA" class='btn btn-success' style="width:100%">
+                            <i class="fa fa-th"></i> Generar excel</button>
                         </div>
                       </div>
 
@@ -557,10 +561,10 @@
   function calcularPrecioConIGVSinIGV(cantidad, precio) {
 
     let precioConIGV = parseFloat(cantidad * precio).toFixed(2);
-    let precioSinIGV = parseFloat((precioConIGV*100)/(100+igvSeleccionado)).toFixed(2);
+    let precioSinIGV = parseFloat((precioConIGV * 100) / (100 + igvSeleccionado)).toFixed(2);
     $("#txtPrecioConIGV").val(precioConIGV);
     $("#txtPrecioSinIGV").val(precioSinIGV);
-    $("#txtIGVCalculado").val(parseFloat(precioConIGV-precioSinIGV).toFixed(2));
+    $("#txtIGVCalculado").val(parseFloat(precioConIGV - precioSinIGV).toFixed(2));
 
   }
 
@@ -589,7 +593,7 @@
     let descripcion = $("#txtDescripcion").val();
     let marca = $("#cboMarca").val();
     let unidad = $("#cboUnidad").val();
-    let cantidad = parseInt($("#txtCantidad").val(),10);
+    let cantidad = parseInt($("#txtCantidad").val(), 10);
     let precio = parseFloat($("#txtPrecio").val());
     let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
     let igvCalculado = parseFloat($("#txtIGVCalculado").val());
@@ -626,7 +630,7 @@
     let descripcion = $("#txtDescripcion").val();
     let marca = $("#cboMarca").val();
     let unidad = $("#cboUnidad").val();
-    let cantidad = parseInt($("#txtCantidad").val(),10);
+    let cantidad = parseInt($("#txtCantidad").val(), 10);
     let precio = parseFloat($("#txtPrecio").val());
     let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
     let igvCalculado = parseFloat($("#txtIGVCalculado").val());
@@ -758,7 +762,7 @@
     $('#mensajeForm1').empty();
 
     // Guardo el IGV según el elegido
-    igvSeleccionado = parseInt($('#txtConsiderarIGV').val(),10);
+    igvSeleccionado = parseInt($('#txtConsiderarIGV').val(), 10);
 
     // Muestro el IGV guardado
     $('#txtIGV').val(igvSeleccionado);
@@ -806,14 +810,7 @@
   var workbook = new ExcelJS.Workbook();
 
   // Esto pone borde, valor y fondo a la celda
-  function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, esNegrita) {
-
-    worksheet.getCell(celda).border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' }
-    };
+  function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, esNegrita, colorBorde) {
 
     // Si le paso un color de fondo, que lo aplique
     if (colorFondo) {
@@ -823,6 +820,15 @@
         fgColor: { argb: colorFondo }
       };
     }
+    if (colorBorde) {
+      worksheet.getCell(celda).border = {
+        top: { style: 'thin', color: { argb: colorBorde } },
+        left: { style: 'thin', color: { argb: colorBorde } },
+        bottom: { style: 'thin', color: { argb: colorBorde } },
+        right: { style: 'thin', color: { argb: colorBorde } }
+      };
+    }
+
     if (valor) {
       worksheet.getCell(celda).value = {
         "richText": [
@@ -837,14 +843,9 @@
 
   }
 
-  function establecerFormulaCelda(worksheet, celda, formula, colorFondo) {
+  function establecerFormulaCelda(worksheet, celda, formula, colorFondo, colorBorde) {
     worksheet.getCell(celda).value = { formula: formula };
-    worksheet.getCell(celda).border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' }
-    };
+    
     // Si le paso un color de fondo, que lo aplique
     if (colorFondo) {
       worksheet.getCell(celda).fill = {
@@ -853,11 +854,17 @@
         fgColor: { argb: colorFondo }
       };
     }
+    if (colorBorde) {
+      worksheet.getCell(celda).border = {
+        top: { style: 'thin', color: { argb: colorBorde } },
+        left: { style: 'thin', color: { argb: colorBorde } },
+        bottom: { style: 'thin', color: { argb: colorBorde } },
+        right: { style: 'thin', color: { argb: colorBorde } }
+      };
+    }
   }
 
-  function unirCeldas(worksheet, inicio, fin, valor, conBorde, colorFuente, colorFondo, esNegrita) {
-
-    worksheet.mergeCells(inicio + ":" + fin);
+  function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colorFondo, esNegrita) {
 
     if (valor) {
       worksheet.getCell(inicio).value = {
@@ -870,12 +877,12 @@
       };
     }
 
-    if (conBorde) {
+    if (colorBorde) {
       worksheet.getCell(inicio).border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' }
+        top: { style: 'thin', color: { argb: colorBorde } },
+        left: { style: 'thin', color: { argb: colorBorde } },
+        bottom: { style: 'thin', color: { argb: colorBorde } },
+        right: { style: 'thin', color: { argb: colorBorde } }
       };
     }
 
@@ -888,28 +895,28 @@
     }
 
     worksheet.getCell(inicio).alignment = { vertical: 'middle', horizontal: 'left' };
-
+    worksheet.mergeCells(inicio + ":" + fin);
 
   }
 
   function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
     unirCeldas(worksheet, `A${filInicio + 3}`, `G${filInicio + 3}`)
-    unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true)
-    establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true)
-    establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true)
-    establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true)
-    establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true)
-    establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true)
-    establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true)
+    unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true,'000000')
+    establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true,'000000')
+    establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true,'000000')
+    establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true,'000000')
+    establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true,'000000')
+    establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true,'000000')
+    establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true,'000000')
 
-    establecerValorCelda(worksheet, `D${filInicio + 4}`, "CONTADO COMERCIAL")
-    establecerValorCelda(worksheet, `D${filInicio + 5}`, "SOLES")
-    establecerValorCelda(worksheet, `D${filInicio + 6}`, "INCLUYE IGV")
-    establecerValorCelda(worksheet, `D${filInicio + 7}`, "BCP SOLES...")
-    establecerValorCelda(worksheet, `D${filInicio + 8}`, "5 DÍAS DESPUÉS")
-    establecerValorCelda(worksheet, `D${filInicio + 9}`, "1 AÑO")
+    establecerValorCelda(worksheet, `D${filInicio + 4}`, "CONTADO COMERCIAL",null,null,false,'000000')
+    establecerValorCelda(worksheet, `D${filInicio + 5}`, "SOLES",null,null,false,'000000')
+    establecerValorCelda(worksheet, `D${filInicio + 6}`, "INCLUYE IGV",null,null,false,'000000')
+    establecerValorCelda(worksheet, `D${filInicio + 7}`, "BCP SOLES...",null,null,false,'000000')
+    establecerValorCelda(worksheet, `D${filInicio + 8}`, "5 DÍAS DESPUÉS",null,null,false,'000000')
+    establecerValorCelda(worksheet, `D${filInicio + 9}`, "1 AÑO",null,null,false,'000000')
 
-    unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", true)
+    unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", "000000")
 
     /*leerFirmaGlassgow().then(data => {
       var firmaGlassgow = workbook.addImage({
@@ -926,11 +933,9 @@
   }
 
   // Esto es una promesa
-  function leerPlantilla() {
+  function leerPlantilla(excelUrl) {
 
     return new Promise((resolve, reject) => {
-
-      var excelUrl = "../plantillas/formatoGlassgowSimple2.xlsx";
 
       var req = new XMLHttpRequest();
       req.open("GET", excelUrl, true);//
@@ -980,7 +985,7 @@
     })
   }
 
-  function generarExcel() {
+  function generarExcelGlassgow() {
 
 
     // Establece los índices de inicio de las filas y columnas
@@ -988,7 +993,7 @@
     let colInicio = 1;
 
     // Uso promesas para esperar a que termine de leer la plantila
-    leerPlantilla()
+    leerPlantilla("../plantillas/formatoGlassgowSimple.xlsx")
       .then((workbook) => {
 
         const ws = workbook.getWorksheet('1');
@@ -997,38 +1002,91 @@
         for (var i = 0; i < productos.length; i++) {
 
           let producto = productos[i];
-          establecerValorCelda(ws, `A${filInicio}`, producto.id);
-          establecerValorCelda(ws, `B${filInicio}`, producto.cantidad);
-          establecerValorCelda(ws, `C${filInicio}`, producto.unidad);
-          establecerValorCelda(ws, `D${filInicio}`, producto.descripcion);
-          establecerValorCelda(ws, `E${filInicio}`, producto.marca);
-          establecerValorCelda(ws, `F${filInicio}`, producto.precio);
+          establecerValorCelda(ws, `A${filInicio}`, producto.id,null,null,false,'000000');
+          establecerValorCelda(ws, `B${filInicio}`, producto.cantidad,null,null,false,'000000');
+          establecerValorCelda(ws, `C${filInicio}`, producto.unidad,null,null,false,'000000');
+          establecerValorCelda(ws, `D${filInicio}`, producto.descripcion,null,null,false,'000000');
+          establecerValorCelda(ws, `E${filInicio}`, producto.marca,null,null,false,'000000');
+          establecerValorCelda(ws, `F${filInicio}`, producto.precio,null,null,false,'000000');
           //establecerValorCelda(ws, `G${filInicio}`, producto.precioConIGV);
 
           // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
-          establecerFormulaCelda(ws, `G${filInicio}`, `B${(filInicio)}*F${(filInicio)}`)
+          establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((B${(filInicio)}*F${(filInicio)}),2)`, null, '000000')
 
           filInicio++;
         }
 
         // Para los totales de todos los registros
         // Primero, el total (Suma simple)
-        establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true);
-        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=SUM(G11:G${(filInicio - 1)})`)
+        establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true,'000000');
+        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC(SUM(G11:G${(filInicio - 1)}),2)`, null, '000000')
 
         // Luego, el subtotal (precioConIGV*100)/(100+igvSeleccionado)
-        establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true);
-        establecerFormulaCelda(ws, `G${filInicio}`, `=((G${filInicio + 2}*100)/(100+${igvSeleccionado}))`)
+        establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true,'000000');
+        establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC(((G${filInicio + 2}*100)/(100+${igvSeleccionado})),2)`, null, '000000')
 
         // Luego, el IGV (total-subtotal)
-        establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true);
-        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=G${filInicio + 2}-G${filInicio}`)
+        establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true),'000000';
+        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC((G${filInicio + 2}-G${filInicio}),2)`, null, '000000')
 
-        
+
 
         // Luego, establezco la parte final para la plantilla de Glassgow
         agregarFinPlantillaGlassgow(ws, filInicio, workbook);
 
+        guardarExcel(workbook);
+      })
+      .catch((error) => {
+        alert(error);
+      })
+
+  }
+
+  function generarExcelLH() {
+
+    // Establece los índices de inicio de las filas y columnas
+    let filInicio = 9;
+    let colInicio = 2;
+
+    // Uso promesas para esperar a que termine de leer la plantila
+    leerPlantilla("../plantillas/formatoLHSimple.xlsx")
+      .then((workbook) => {
+
+        const ws = workbook.getWorksheet('1');
+
+        // Por cada uno de los productos, lleno los registros del Excel
+        for (var i = 0; i < productos.length; i++) {
+
+          let producto = productos[i];
+
+          // Este formato requiere unir las celdas B y C de descripción
+          unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion);
+          establecerValorCelda(ws, `D${filInicio}`, producto.marca)
+          establecerValorCelda(ws, `E${filInicio}`, producto.cantidad);
+          establecerValorCelda(ws, `F${filInicio}`, producto.precio);
+
+          // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
+          establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((E${(filInicio)}*F${(filInicio)}),2)`);
+
+          filInicio++;
+        }
+
+        // Para los totales de todos los registros
+        // Primero, el total (Suma simple)
+        establecerValorCelda(ws, `F${filInicio + 3}`, "TOTAL:", "000000", "ffffff", true, '000000');
+        establecerFormulaCelda(ws, `G${filInicio + 3}`, `=TRUNC(SUM(G9:G${(filInicio - 1)}),2)`);
+
+        // Luego el subtotal (precioConIGV*100)/(100+igvSeleccionado)
+        establecerValorCelda(ws, `F${filInicio + 1}`, "SUB TOTAL:", "000000", "ffffff", true, '000000');
+        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC(((G${filInicio + 3}*100)/(100+${igvSeleccionado})),2)`);
+
+        // Luego, el IGV (total-subtotal)
+        establecerValorCelda(ws, `F${filInicio + 2}`, "I.G.V.:", "000000", "ffffff", true, '000000');
+        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC((G${filInicio + 3}-G${filInicio+1}),2)`);
+        
+        // Luego, establezco la parte final para la plantilla de Glassgow
+        //agregarFinPlantillaGlassgow(ws, filInicio, workbook);
+                
         guardarExcel(workbook);
       })
       .catch((error) => {
@@ -1057,8 +1115,16 @@
       });
   }
 
-  $('#btnExportar').click(function () {
-    generarExcel();
+  $('#btnExportarGlassgow').click(function () {
+    generarExcelGlassgow();
+  })
+
+  $('#btnExportarLH').click(function () {
+    generarExcelLH();
+  })
+
+  $('#btnExportarNA').click(function () {
+    //generarExcelGlassgow();
   })
 
   // Clase utilitaria
