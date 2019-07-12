@@ -845,7 +845,7 @@
 
   function establecerFormulaCelda(worksheet, celda, formula, colorFondo, colorBorde) {
     worksheet.getCell(celda).value = { formula: formula };
-    
+
     // Si le paso un color de fondo, que lo aplique
     if (colorFondo) {
       worksheet.getCell(celda).fill = {
@@ -864,7 +864,7 @@
     }
   }
 
-  function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colorFondo, esNegrita) {
+  function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colorFondo, esNegrita, esBordeGrueso) {
 
     if (valor) {
       worksheet.getCell(inicio).value = {
@@ -879,10 +879,10 @@
 
     if (colorBorde) {
       worksheet.getCell(inicio).border = {
-        top: { style: 'thin', color: { argb: colorBorde } },
-        left: { style: 'thin', color: { argb: colorBorde } },
-        bottom: { style: 'thin', color: { argb: colorBorde } },
-        right: { style: 'thin', color: { argb: colorBorde } }
+        top: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+        left: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+        bottom: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+        right: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } }
       };
     }
     if (colorFondo) {
@@ -900,20 +900,20 @@
 
   function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
     unirCeldas(worksheet, `A${filInicio + 3}`, `G${filInicio + 3}`)
-    unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true,'000000')
-    establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true,'000000')
-    establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true,'000000')
-    establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true,'000000')
-    establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true,'000000')
-    establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true,'000000')
-    establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true,'000000')
+    unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true, '000000')
 
-    establecerValorCelda(worksheet, `D${filInicio + 4}`, "CONTADO COMERCIAL",null,null,false,'000000')
-    establecerValorCelda(worksheet, `D${filInicio + 5}`, "SOLES",null,null,false,'000000')
-    establecerValorCelda(worksheet, `D${filInicio + 6}`, "INCLUYE IGV",null,null,false,'000000')
-    establecerValorCelda(worksheet, `D${filInicio + 7}`, "BCP SOLES...",null,null,false,'000000')
-    establecerValorCelda(worksheet, `D${filInicio + 8}`, "5 DÍAS DESPUÉS",null,null,false,'000000')
-    establecerValorCelda(worksheet, `D${filInicio + 9}`, "1 AÑO",null,null,false,'000000')
+    establecerValorCelda(worksheet, `D${filInicio + 4}`, "CONTADO COMERCIAL", null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 5}`, "SOLES", null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 6}`, "INCLUYE IGV", null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 7}`, "BCP SOLES...", null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 8}`, "5 DÍAS DESPUÉS", null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 9}`, "1 AÑO", null, null, false, '000000')
 
     unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", "000000")
 
@@ -931,7 +931,62 @@
 
   }
 
-  // Esto es una promesa
+  function agregarFinPlantillaLH(ws, filaInicio, workbook) {
+    // Agrego los bordes para los cuadritos que faltan
+    let colorBorde = "299b5d";
+    let estiloBorde = "medium";
+
+    ws.getCell(`F{${filaInicio + 1}}`).border = {
+      top: { style: estiloBorde, color: { argb: colorBorde } },
+      left: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`F{${filaInicio + 2}}`).border = {
+      left: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`F{${filaInicio + 3}}`).border = {
+      left: { style: estiloBorde, color: { argb: colorBorde } },
+      bottom: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`G{${filaInicio + 1}}`).border = {
+      top: { style: estiloBorde, color: { argb: colorBorde } },
+      right: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`G{${filaInicio + 2}}`).border = {
+      right: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`G{${filaInicio + 3}}`).border = {
+      right: { style: estiloBorde, color: { argb: colorBorde } },
+      bottom: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`B{${filaInicio + 5}}`).border = {
+      top: { style: estiloBorde, color: { argb: colorBorde } },
+      left: { style: estiloBorde, color: { argb: colorBorde } },
+      right: { style: estiloBorde, color: { argb: colorBorde } },
+      bottom: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    // Agrego el cuadro de observaciones
+    unirCeldas(ws, `B${filaInicio + 5}`, `G${filaInicio + 14}`, "", colorBorde, null, null, true, true)
+    ws.getCell(`B${filaInicio + 5}`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
+    ws.getCell(`B${filaInicio + 5}`).value = {
+      "richText": [
+        {
+          "font": {"bold": true},
+          "text": `OBSERVACIONES:\r\n\r\nGARANTIA: 1 AÑO\r\nCONDICIONES: CONTADO COMERCIAL\r\nENTREGA: 4 DÍAS`
+        }
+      ]
+    };
+  }
+
+  // Esto es una promesa; y siempre te va a decir la verdad en la cara,
+  // te rechace o te resuelva. No como ella, que salió y se besó con alguien
+  // más, aun habiendo jurado que me amaba solo a mí.
   function leerPlantilla(excelUrl) {
 
     return new Promise((resolve, reject) => {
@@ -1001,12 +1056,12 @@
         for (var i = 0; i < productos.length; i++) {
 
           let producto = productos[i];
-          establecerValorCelda(ws, `A${filInicio}`, producto.id,null,null,false,'000000');
-          establecerValorCelda(ws, `B${filInicio}`, producto.cantidad,null,null,false,'000000');
-          establecerValorCelda(ws, `C${filInicio}`, producto.unidad,null,null,false,'000000');
-          establecerValorCelda(ws, `D${filInicio}`, producto.descripcion,null,null,false,'000000');
-          establecerValorCelda(ws, `E${filInicio}`, producto.marca,null,null,false,'000000');
-          establecerValorCelda(ws, `F${filInicio}`, producto.precio,null,null,false,'000000');
+          establecerValorCelda(ws, `A${filInicio}`, producto.id, null, null, false, '000000');
+          establecerValorCelda(ws, `B${filInicio}`, producto.cantidad, null, null, false, '000000');
+          establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, false, '000000');
+          establecerValorCelda(ws, `D${filInicio}`, producto.descripcion, null, null, false, '000000');
+          establecerValorCelda(ws, `E${filInicio}`, producto.marca, null, null, false, '000000');
+          establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '000000');
           //establecerValorCelda(ws, `G${filInicio}`, producto.precioConIGV);
 
           // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
@@ -1017,15 +1072,15 @@
 
         // Para los totales de todos los registros
         // Primero, el total (Suma simple)
-        establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true,'000000');
+        establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true, '000000');
         establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC(SUM(G11:G${(filInicio - 1)}),2)`, null, '000000')
 
         // Luego, el subtotal (precioConIGV*100)/(100+igvSeleccionado)
-        establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true,'000000');
+        establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true, '000000');
         establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC(((G${filInicio + 2}*100)/(100+${igvSeleccionado})),2)`, null, '000000')
 
         // Luego, el IGV (total-subtotal)
-        establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true),'000000';
+        establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true), '000000';
         establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC((G${filInicio + 2}-G${filInicio}),2)`, null, '000000')
 
 
@@ -1059,33 +1114,33 @@
           let producto = productos[i];
 
           // Este formato requiere unir las celdas B y C de descripción
-          unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion);
-          establecerValorCelda(ws, `D${filInicio}`, producto.marca)
-          establecerValorCelda(ws, `E${filInicio}`, producto.cantidad);
-          establecerValorCelda(ws, `F${filInicio}`, producto.precio);
+          unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion, '28a98a');
+          establecerValorCelda(ws, `D${filInicio}`, producto.marca, null, null, false, '28a98a')
+          establecerValorCelda(ws, `E${filInicio}`, producto.cantidad, null, null, false, '28a98a');
+          establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '28a98a');
 
           // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
-          establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((E${(filInicio)}*F${(filInicio)}),2)`);
+          establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((E${(filInicio)}*F${(filInicio)}),2)`, null, '28a98a');
 
           filInicio++;
         }
 
         // Para los totales de todos los registros
         // Primero, el total (Suma simple)
-        establecerValorCelda(ws, `F${filInicio + 3}`, "TOTAL:", "000000", "ffffff", true, '000000');
-        establecerFormulaCelda(ws, `G${filInicio + 3}`, `=TRUNC(SUM(G9:G${(filInicio - 1)}),2)`);
+        establecerValorCelda(ws, `F${filInicio + 3}`, "TOTAL:", null, null, true, '28a98a');
+        establecerFormulaCelda(ws, `G${filInicio + 3}`, `=TRUNC(SUM(G9:G${(filInicio - 1)}),2)`, null, '28a98a');
 
         // Luego el subtotal (precioConIGV*100)/(100+igvSeleccionado)
-        establecerValorCelda(ws, `F${filInicio + 1}`, "SUB TOTAL:", "000000", "ffffff", true, '000000');
-        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC(((G${filInicio + 3}*100)/(100+${igvSeleccionado})),2)`);
+        establecerValorCelda(ws, `F${filInicio + 1}`, "SUB TOTAL:", null, null, true, '28a98a');
+        establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC(((G${filInicio + 3}*100)/(100+${igvSeleccionado})),2)`, null, '28a98a');
 
         // Luego, el IGV (total-subtotal)
-        establecerValorCelda(ws, `F${filInicio + 2}`, "I.G.V.:", "000000", "ffffff", true, '000000');
-        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC((G${filInicio + 3}-G${filInicio+1}),2)`);
-        
-        // Luego, establezco la parte final para la plantilla de Glassgow
-        //agregarFinPlantillaGlassgow(ws, filInicio, workbook);
-                
+        establecerValorCelda(ws, `F${filInicio + 2}`, "I.G.V.:", null, null, true, '28a98a');
+        establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC((G${filInicio + 3}-G${filInicio + 1}),2)`, null, '28a98a');
+
+        // Luego, establezco la parte final para la plantilla de LH
+        agregarFinPlantillaLH(ws, filInicio, workbook);
+
         guardarExcel(workbook);
       })
       .catch((error) => {
@@ -1096,50 +1151,50 @@
 
   function generarExcelNA() {
 
-// Establece los índices de inicio de las filas y columnas
-let filInicio = 18;
-let colInicio = 1;
+    // Establece los índices de inicio de las filas y columnas
+    let filInicio = 18;
+    let colInicio = 1;
 
-// Uso promesas para esperar a que termine de leer la plantila
-leerPlantilla("../plantillas/formatoNASimple.xlsx")
-  .then((workbook) => {
+    // Uso promesas para esperar a que termine de leer la plantila
+    leerPlantilla("../plantillas/formatoNASimple.xlsx")
+      .then((workbook) => {
 
-    const ws = workbook.getWorksheet('1');
+        const ws = workbook.getWorksheet('1');
 
-    // Por cada uno de los productos, lleno los registros del Excel
-    for (var i = 0; i < productos.length; i++) {
+        // Por cada uno de los productos, lleno los registros del Excel
+        for (var i = 0; i < productos.length; i++) {
 
-      let producto = productos[i];
-      // Este formato requiere unir las celdas A y B de cantidad
-      unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, producto.cantidad, '000000');
-      establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null,null,null,'000000');
+          let producto = productos[i];
+          // Este formato requiere unir las celdas A y B de cantidad
+          unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, producto.cantidad, '000000');
+          establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, null, '000000');
 
-      // Este formato requiere unir las celdas D a G de descripción
-      unirCeldas(ws, `D${filInicio}`, `G${filInicio}`, producto.descripcion, '000000');
-      establecerValorCelda(ws, `H${filInicio}`, producto.precio, null,null,null,'000000');
+          // Este formato requiere unir las celdas D a G de descripción
+          unirCeldas(ws, `D${filInicio}`, `G${filInicio}`, producto.descripcion, '000000');
+          establecerValorCelda(ws, `H${filInicio}`, producto.precio, null, null, null, '000000');
 
-      // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
-      establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC((A${(filInicio)}*H${(filInicio)}),2)`, null, '000000');
+          // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
+          establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC((A${(filInicio)}*H${(filInicio)}),2)`, null, '000000');
 
-      filInicio++;
-    }
+          filInicio++;
+        }
 
-    // Para los totales de todos los registros
-    // Primero, el total (Suma simple)
-    establecerValorCelda(ws, `H${filInicio}`, "Total", "000000", "ffffff", false, '000000');
-    establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC(SUM(I18:I${(filInicio - 1)}),2)`,null,'000000');
-       
-    unirCeldas(ws, `A${filInicio+5}`,`I${filInicio+5}`, "LOS PRECIOS INCLUYEN EL IGV Y ESTAN EXPRESADOS EN SOLES", null, null, false,null);
-    unirCeldas(ws, `A${filInicio+6}`,`I${filInicio+6}`, "ENTREGA 5 DIAS UTILES", null, null, false, null);
-    unirCeldas(ws, `A${filInicio+7}`,`I${filInicio+7}`, "VENCIMIENTO DE 1 AÑO", null, null, false, null);
-              
-    guardarExcel(workbook);
-  })
-  .catch((error) => {
-    alert(error);
-  })
+        // Para los totales de todos los registros
+        // Primero, el total (Suma simple)
+        establecerValorCelda(ws, `H${filInicio}`, "Total", "000000", "ffffff", false, '000000');
+        establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC(SUM(I18:I${(filInicio - 1)}),2)`, null, '000000');
 
-}
+        unirCeldas(ws, `A${filInicio + 5}`, `I${filInicio + 5}`, "LOS PRECIOS INCLUYEN EL IGV Y ESTAN EXPRESADOS EN SOLES", null, null, false);
+        unirCeldas(ws, `A${filInicio + 6}`, `I${filInicio + 6}`, "ENTREGA 5 DIAS UTILES", null, null, false);
+        unirCeldas(ws, `A${filInicio + 7}`, `I${filInicio + 7}`, "VENCIMIENTO DE 1 AÑO", null, null, false);
+
+        guardarExcel(workbook);
+      })
+      .catch((error) => {
+        alert(error);
+      })
+
+  }
 
   function guardarExcel(workbook) {
     /*const options = {
