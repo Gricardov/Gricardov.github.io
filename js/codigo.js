@@ -1,84 +1,84 @@
- // Los valores predeterminados
- const RAZONSOCIAL = "Razón social predeterminada";
- const RUC = "123456789";
- const DIRECCION = "Mi dirección predeterminada";
- const TELEFONO = "987654321";
- const IGV = 18;
+// Los valores predeterminados
+const RAZONSOCIAL = "Razón social predeterminada";
+const RUC = "123456789";
+const DIRECCION = "Mi dirección predeterminada";
+const TELEFONO = "987654321";
+const IGV = 18;
 
- // Las acciones
- const MODIFICAR = 1;
- const ELIMINAR = 2;
+// Las acciones
+const MODIFICAR = 1;
+const ELIMINAR = 2;
 
- // Los valores seleccionados
- // Arreglos, textos, etc
- let idSeleccionado = -1;
- let accionActual = -1;
- let igvSeleccionado = IGV;
- let productos = [];
- let fechaActual= new Date();
- let fechaActualCadena = fechaActual.getDate()  + "/" + (fechaActual.getMonth()+1) + "/" + fechaActual.getFullYear() + " ";
+// Los valores seleccionados
+// Arreglos, textos, etc
+let idSeleccionado = -1;
+let accionActual = -1;
+let igvSeleccionado = IGV;
+let productos = [];
+let fechaActual = new Date();
+let fechaActualCadena = fechaActual.getDate() + "/" + (fechaActual.getMonth() + 1) + "/" + fechaActual.getFullYear() + " ";
 
- // Cargo los valores predeterminados
- $('#txtRazonSocial').val(RAZONSOCIAL)
- $('#txtRuc').val(RUC);
- $('#txtDireccion').val(DIRECCION);
- $('#txtTelefono').val(TELEFONO);
- $('#txtConsiderarIGV').val(IGV);
- $('.txtFecha').val(fechaActualCadena);
+// Cargo los valores predeterminados
+$('#txtRazonSocial').val(RAZONSOCIAL)
+$('#txtRuc').val(RUC);
+$('#txtDireccion').val(DIRECCION);
+$('#txtTelefono').val(TELEFONO);
+$('#txtConsiderarIGV').val(IGV);
+$('.txtFecha').val(fechaActualCadena);
 
- // Cargo el deslizador de página
- $("#contenedor").page();
+// Cargo el deslizador de página
+$("#contenedor").page();
 
 
 
- // Manejo de botones y cambios
+// Manejo de botones y cambios
 
- function cargarDatosCampos(id) {
+function cargarDatosCampos(id) {
 
-   let producto = null;
+    let producto = null;
 
-   for (var i = 0; i < productos.length; i++) {
-     if (productos[i].id == id) {
-       producto = productos[i];
-     }
-   }
-   // Muestra los campos en el formulario para poder editarlos
-   if (producto) {
-     $("#txtDescripcion").val(producto.descripcion);
-     $("#cboMarca").val(producto.marca);
-     $("#cboUnidad").val(producto.unidad);
-     $("#txtCantidad").val(producto.cantidad);
-     $("#txtPrecio").val(producto.precio);
-     $("#txtPrecioConIGV").val(producto.precioConIGV);
-     $("#txtIGVCalculado").val(producto.igvCalculado);
-     $("#txtPrecioSinIGV").val(producto.precioSinIGV);
+    for (var i = 0; i < productos.length; i++) {
+        if (productos[i].id == id) {
+            producto = productos[i];
+        }
+    }
+    // Muestra los campos en el formulario para poder editarlos
+    if (producto) {
+        $("#txtDescripcion").val(producto.descripcion);
+        $("#cboMarca").val(producto.marca);
+        $("#cboUnidad").val(producto.unidad);
+        $("#txtCantidad").val(producto.cantidad);
+        $("#txtPrecio").val(producto.precio);
+        $("#txtPrecioConIGV").val(producto.precioConIGV);
+        $("#txtIGVCalculado").val(producto.igvCalculado);
+        $("#txtPrecioSinIGV").val(producto.precioSinIGV);
 
-     // Y enfoco el txtDescripcion
-     $("#txtDescripcion").focus();
+        // Y enfoco el txtDescripcion
+        $("#txtDescripcion").focus();
 
-   }
+    }
 
- }
+}
 
- function limpiarCampos() {
-   $("#txtDescripcion").val("");
-   $("#cboMarca").prop('selectedIndex', 0);
-   $("#cboUnidad").prop('selectedIndex', 0);
-   $("#txtCantidad").val("");
-   $("#txtPrecio").val("");
-   $("#txtPrecioSinIGV").val("");
-   $("#txtIGVCalculado").val("");
-   $("#txtPrecioConIGV").val("");
+function limpiarCampos() {
+    $("#txtDescripcion").val("");
+    $("#cboMarca").prop('selectedIndex', 0);
+    $("#cboUnidad").prop('selectedIndex', 0);
+    $("#txtCantidad").val("");
+    $("#txtPrecio").val("");
+    $("#txtPrecioSinIGV").val("");
+    $("#txtIGVCalculado").val("");
+    $("#txtPrecioConIGV").val("");
 
- }
+}
 
- function actualizarTabla() {
+function actualizarTabla() {
 
-   // Vacío la tabla
-   $("#tabla").empty();
+    // Vacío la tabla
+    $("#tabla").empty();
 
-   // Reescribo el encabezado
-   $("#tabla").append(`
+    // Reescribo el encabezado
+    $("#tabla").append(`
    <div class="fila-tabla encabezado-tabla blue">
                          <div class="celda-tabla">
                            Item
@@ -114,11 +114,11 @@
                        </div>
    `)
 
-   for (var i = 0; i < productos.length; i++) {
+    for (var i = 0; i < productos.length; i++) {
 
-     let producto = productos[i];
+        let producto = productos[i];
 
-     $("#tabla").append(`<div class="fila-tabla">
+        $("#tabla").append(`<div class="fila-tabla">
                          <div class="celda-tabla">
                            ${producto.id}
                          </div>
@@ -155,265 +155,265 @@
                        </div>
 `);
 
-   }
+    }
 
-   // Finalmente, calculo el total de todo
-   calcularTodoTotal();
+    // Finalmente, calculo el total de todo
+    calcularTodoTotal();
 
- }
+}
 
- function agregarProducto(producto) {
-   productos.push(producto);
-   actualizarTabla();
-   limpiarCampos();
-   $("#txtDescripcion").focus();
- }
+function agregarProducto(producto) {
+    productos.push(producto);
+    actualizarTabla();
+    limpiarCampos();
+    $("#txtDescripcion").focus();
+}
 
- function modificarProducto(producto) {
-   for (var i = 0; i < productos.length; i++) {
-     if (productos[i].id == producto.id) {
-       productos[i] = producto;
-     }
-   }
-   actualizarTabla();
+function modificarProducto(producto) {
+    for (var i = 0; i < productos.length; i++) {
+        if (productos[i].id == producto.id) {
+            productos[i] = producto;
+        }
+    }
+    actualizarTabla();
 
- }
+}
 
- function eliminarProducto(id) {
+function eliminarProducto(id) {
 
-   for (var i = 0; i < productos.length; i++) {
-     if (productos[i].id == id) {
-       productos.splice(i, 1);
-     }
-   }
+    for (var i = 0; i < productos.length; i++) {
+        if (productos[i].id == id) {
+            productos.splice(i, 1);
+        }
+    }
 
-   actualizarTabla();
+    actualizarTabla();
 
- }
+}
 
- function calcularTodoTotal() {
-   let acumulado = 0;
+function calcularTodoTotal() {
+    let acumulado = 0;
 
-   // Recorro el arreglo y sumo los totales
-   for (var i = 0; i < productos.length; i++) {
-     acumulado += parseFloat(productos[i].precioConIGV);
-   }
-   $("#txtTotalTodo").val(acumulado.toFixed(2));
+    // Recorro el arreglo y sumo los totales
+    for (var i = 0; i < productos.length; i++) {
+        acumulado += parseFloat(productos[i].precioConIGV);
+    }
+    $("#txtTotalTodo").val(acumulado.toFixed(2));
 
- }
+}
 
- function calcularPrecioConIGVSinIGV(cantidad, precio) {
+function calcularPrecioConIGVSinIGV(cantidad, precio) {
 
-   let precioConIGV = parseFloat(cantidad * precio).toFixed(2);
-   let precioSinIGV = parseFloat((precioConIGV * 100) / (100 + igvSeleccionado)).toFixed(2);
-   $("#txtPrecioConIGV").val(precioConIGV);
-   $("#txtPrecioSinIGV").val(precioSinIGV);
-   $("#txtIGVCalculado").val(parseFloat(precioConIGV - precioSinIGV).toFixed(2));
+    let precioConIGV = parseFloat(cantidad * precio).toFixed(2);
+    let precioSinIGV = parseFloat((precioConIGV * 100) / (100 + igvSeleccionado)).toFixed(2);
+    $("#txtPrecioConIGV").val(precioConIGV);
+    $("#txtPrecioSinIGV").val(precioSinIGV);
+    $("#txtIGVCalculado").val(parseFloat(precioConIGV - precioSinIGV).toFixed(2));
 
- }
+}
 
- // Hago los cálculos apenas cambie un campo
- $("#txtCantidad").on('input', function () {
-   let cantidad = $("#txtCantidad").val();
-   let precio = $("#txtPrecio").val();
-   if (!isNaN(cantidad) && !isNaN(precio)) {
-     calcularPrecioConIGVSinIGV(cantidad, precio);
-   }
+// Hago los cálculos apenas cambie un campo
+$("#txtCantidad").on('input', function () {
+    let cantidad = $("#txtCantidad").val();
+    let precio = $("#txtPrecio").val();
+    if (!isNaN(cantidad) && !isNaN(precio)) {
+        calcularPrecioConIGVSinIGV(cantidad, precio);
+    }
 
- });
+});
 
- $("#txtPrecio").on('input', function () {
-   let cantidad = $("#txtCantidad").val();
-   let precio = $("#txtPrecio").val();
-   if (!isNaN(cantidad) && !isNaN(precio)) {
-     calcularPrecioConIGVSinIGV(cantidad, precio);
-   }
+$("#txtPrecio").on('input', function () {
+    let cantidad = $("#txtCantidad").val();
+    let precio = $("#txtPrecio").val();
+    if (!isNaN(cantidad) && !isNaN(precio)) {
+        calcularPrecioConIGVSinIGV(cantidad, precio);
+    }
 
- });
+});
 
- // Agrego los campos al hacer click en Agregar
- $("#btnAgregar").click(function (e) {
+// Agrego los campos al hacer click en Agregar
+$("#btnAgregar").click(function (e) {
 
-   let descripcion = $("#txtDescripcion").val();
-   let marca = $("#cboMarca").val();
-   let unidad = $("#cboUnidad").val();
-   let cantidad = parseInt($("#txtCantidad").val(), 10);
-   let precio = parseFloat($("#txtPrecio").val());
-   let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
-   let igvCalculado = parseFloat($("#txtIGVCalculado").val());
-   let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
+    let descripcion = $("#txtDescripcion").val();
+    let marca = $("#cboMarca").val();
+    let unidad = $("#cboUnidad").val();
+    let cantidad = parseInt($("#txtCantidad").val(), 10);
+    let precio = parseFloat($("#txtPrecio").val());
+    let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
+    let igvCalculado = parseFloat($("#txtIGVCalculado").val());
+    let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
 
-   // Primero, verifico si hay campos vacíos 
-   if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioSinIGV != "" && precioConIGV != "") {
-     // Si todo está bien, que se agregue al arreglo
-     $('#mensajeForm2').empty();
+    // Primero, verifico si hay campos vacíos 
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioSinIGV != "" && precioConIGV != "") {
+        // Si todo está bien, que se agregue al arreglo
+        $('#mensajeForm2').empty();
 
-     let producto = {};
-     producto.id = productos.length + 1;
-     producto.descripcion = descripcion;
-     producto.marca = marca;
-     producto.unidad = unidad;
-     producto.cantidad = cantidad;
-     producto.precio = precio;
-     producto.precioSinIGV = precioSinIGV;
-     producto.igvCalculado = igvCalculado;
-     producto.precioConIGV = precioConIGV;
-     agregarProducto(producto);
+        let producto = {};
+        producto.id = productos.length + 1;
+        producto.descripcion = descripcion;
+        producto.marca = marca;
+        producto.unidad = unidad;
+        producto.cantidad = cantidad;
+        producto.precio = precio;
+        producto.precioSinIGV = precioSinIGV;
+        producto.igvCalculado = igvCalculado;
+        producto.precioConIGV = precioConIGV;
+        agregarProducto(producto);
 
-   } else {
-     $("#contenedor").page().shake();
-     $('#mensajeForm2').empty();
-     $('#mensajeForm2').append('<div class="alert alert-danger" role="alert">Verifique que todos los campos se han llenado correctamente, incluyendo números</div>');
-   }
+    } else {
+        $("#contenedor").page().shake();
+        $('#mensajeForm2').empty();
+        $('#mensajeForm2').append('<div class="alert alert-danger" role="alert">Verifique que todos los campos se han llenado correctamente, incluyendo números</div>');
+    }
 
- })
+})
 
- // Actualizo el registro seleccionado
- $("#btnActualizar").click(function (e) {
+// Actualizo el registro seleccionado
+$("#btnActualizar").click(function (e) {
 
-   let descripcion = $("#txtDescripcion").val();
-   let marca = $("#cboMarca").val();
-   let unidad = $("#cboUnidad").val();
-   let cantidad = parseInt($("#txtCantidad").val(), 10);
-   let precio = parseFloat($("#txtPrecio").val());
-   let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
-   let igvCalculado = parseFloat($("#txtIGVCalculado").val());
-   let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
+    let descripcion = $("#txtDescripcion").val();
+    let marca = $("#cboMarca").val();
+    let unidad = $("#cboUnidad").val();
+    let cantidad = parseInt($("#txtCantidad").val(), 10);
+    let precio = parseFloat($("#txtPrecio").val());
+    let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
+    let igvCalculado = parseFloat($("#txtIGVCalculado").val());
+    let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
 
-   // Primero, verifico si hay campos vacíos 
-   if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioConIGV != "" && precioSinIGV != "") {
-     // Si todo está bien, que se agregue al arreglo
-     $('#mensajeForm2').empty();
+    // Primero, verifico si hay campos vacíos 
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioConIGV != "" && precioSinIGV != "") {
+        // Si todo está bien, que se agregue al arreglo
+        $('#mensajeForm2').empty();
 
-     let producto = {};
-     producto.id = idSeleccionado;
-     producto.descripcion = descripcion;
-     producto.marca = marca;
-     producto.unidad = unidad;
-     producto.cantidad = cantidad;
-     producto.precio = precio;
-     producto.precioConIGV = precioConIGV;
-     producto.igvCalculado = igvCalculado;
-     producto.precioSinIGV = precioSinIGV;
-     modificarProducto(producto);
-     limpiarCampos();
-     // Deshabilito el btnActualizar, eliminar y habilito el agregar
-     $('#btnActualizar').attr("disabled", true);
-     $('#btnCancelar').attr("disabled", true);
-     $('#btnAgregar').attr("disabled", false);
+        let producto = {};
+        producto.id = idSeleccionado;
+        producto.descripcion = descripcion;
+        producto.marca = marca;
+        producto.unidad = unidad;
+        producto.cantidad = cantidad;
+        producto.precio = precio;
+        producto.precioConIGV = precioConIGV;
+        producto.igvCalculado = igvCalculado;
+        producto.precioSinIGV = precioSinIGV;
+        modificarProducto(producto);
+        limpiarCampos();
+        // Deshabilito el btnActualizar, eliminar y habilito el agregar
+        $('#btnActualizar').attr("disabled", true);
+        $('#btnCancelar').attr("disabled", true);
+        $('#btnAgregar').attr("disabled", false);
 
-     accionActual = -1;
-     idSeleccionado = -1;
+        accionActual = -1;
+        idSeleccionado = -1;
 
-   } else {
-     $("#contenedor").page().shake();
-     $('#mensajeForm2').empty();
-     $('#mensajeForm2').append('<div class="alert alert-danger" role="alert">Verifique que todos los campos se han llenado correctamente, incluyendo números</div>');
-   }
+    } else {
+        $("#contenedor").page().shake();
+        $('#mensajeForm2').empty();
+        $('#mensajeForm2').append('<div class="alert alert-danger" role="alert">Verifique que todos los campos se han llenado correctamente, incluyendo números</div>');
+    }
 
- })
+})
 
- // Cancelo la acción actual y dejo todo como estaba
- $("#btnCancelar").click(function (e) {
+// Cancelo la acción actual y dejo todo como estaba
+$("#btnCancelar").click(function (e) {
 
-   accionActual = -1;
-   idSeleccionado = -1;
+    accionActual = -1;
+    idSeleccionado = -1;
 
-   limpiarCampos();
+    limpiarCampos();
 
-   // Habilito el btnActualizar, eliminar y deshabilito el agregar
-   $('#btnActualizar').attr("disabled", true);
-   $('#btnCancelar').attr("disabled", true);
-   $('#btnAgregar').attr("disabled", false);
+    // Habilito el btnActualizar, eliminar y deshabilito el agregar
+    $('#btnActualizar').attr("disabled", true);
+    $('#btnCancelar').attr("disabled", true);
+    $('#btnAgregar').attr("disabled", false);
 
- })
+})
 
- // Los botones que se encuentran en cada registro
+// Los botones que se encuentran en cada registro
 
- $("#tabla").on("click", ".editarRegistro", function (ev) {
-   var id = $(ev.target).attr("data-id");
-   // Luego, establezco el id y su acción actual
-   accionActual = MODIFICAR;
-   idSeleccionado = id;
+$("#tabla").on("click", ".editarRegistro", function (ev) {
+    var id = $(ev.target).attr("data-id");
+    // Luego, establezco el id y su acción actual
+    accionActual = MODIFICAR;
+    idSeleccionado = id;
 
-   // Habilito el btnActualizar, eliminar y deshabilito el agregar
-   $('#btnActualizar').attr("disabled", false);
-   $('#btnCancelar').attr("disabled", false);
-   $('#btnAgregar').attr("disabled", true);
+    // Habilito el btnActualizar, eliminar y deshabilito el agregar
+    $('#btnActualizar').attr("disabled", false);
+    $('#btnCancelar').attr("disabled", false);
+    $('#btnAgregar').attr("disabled", true);
 
-   cargarDatosCampos(id);
+    cargarDatosCampos(id);
 
- });
+});
 
- $("#tabla").on("click", ".borrarRegistro", function (ev) {
-   var id = $(ev.target).attr("data-id");
-   $("#cuerpoModalOpcion").empty();
-   $("#cuerpoModalOpcion").append(`<p>¿Deseas borrar el item ${id}?</p>`);
+$("#tabla").on("click", ".borrarRegistro", function (ev) {
+    var id = $(ev.target).attr("data-id");
+    $("#cuerpoModalOpcion").empty();
+    $("#cuerpoModalOpcion").append(`<p>¿Deseas borrar el item ${id}?</p>`);
 
-   // Luego, establezco el id y su acción actual
-   accionActual = ELIMINAR;
-   idSeleccionado = id;
+    // Luego, establezco el id y su acción actual
+    accionActual = ELIMINAR;
+    idSeleccionado = id;
 
-   $("#modalOpcion").modal()
+    $("#modalOpcion").modal()
 
- });
+});
 
- // Manejo de los botones del modal de opciones
- $("#btnSi").on("click", function (ev) {
-   if (accionActual == ELIMINAR) {
-     eliminarProducto(idSeleccionado);
-     accionActual = -1;
-     idSeleccionado = -1;
-   }
- });
+// Manejo de los botones del modal de opciones
+$("#btnSi").on("click", function (ev) {
+    if (accionActual == ELIMINAR) {
+        eliminarProducto(idSeleccionado);
+        accionActual = -1;
+        idSeleccionado = -1;
+    }
+});
 
- $("#btnNo").on("click", function (ev) {
-   accionActual = -1;
-   idSeleccionado = -1;
- });
+$("#btnNo").on("click", function (ev) {
+    accionActual = -1;
+    idSeleccionado = -1;
+});
 
- // Manejo de deslizador de página
+// Manejo de deslizador de página
 
- // La función de validación para mostrar el registro 2
- $("#btnMostrarReg2").click(function (ev) {
-   var razonSocial = $('#txtRazonSocial').val();
-   var ruc = $('#txtRuc').val()
-   var direccion = $('#txtDireccion').val()
-   var telefono = $('#txtTelefono').val()
-   var igv = $('#txtConsiderarIGV').val()
+// La función de validación para mostrar el registro 2
+$("#btnMostrarReg2").click(function (ev) {
+    var razonSocial = $('#txtRazonSocial').val();
+    var ruc = $('#txtRuc').val()
+    var direccion = $('#txtDireccion').val()
+    var telefono = $('#txtTelefono').val()
+    var igv = $('#txtConsiderarIGV').val()
 
-   if (razonSocial == "" || ruc == "" || direccion == "" || telefono == "" || igv == "") {
-     $("#contenedor").page().shake();
-     $('#mensajeForm1').empty();
-     $('#mensajeForm1').append('<div class="alert alert-danger" role="alert">Hay campos vacíos</div>');
-     return;
-   }
+    if (razonSocial == "" || ruc == "" || direccion == "" || telefono == "" || igv == "") {
+        $("#contenedor").page().shake();
+        $('#mensajeForm1').empty();
+        $('#mensajeForm1').append('<div class="alert alert-danger" role="alert">Hay campos vacíos</div>');
+        return;
+    }
 
-   // Pasa a la siguiente página
-   var page = $(ev.target).attr("data-page-name");
+    // Pasa a la siguiente página
+    var page = $(ev.target).attr("data-page-name");
 
-   var trans = $(ev.target).attr("data-page-trans");
+    var trans = $(ev.target).attr("data-page-trans");
 
-   if ($("#contenedor").page().fetch(page) === null) {
+    if ($("#contenedor").page().fetch(page) === null) {
 
-     $("#contenedor").page().shake();
-   }
-   else {
-     $("#contenedor").page().transition(page, trans);
-   }
+        $("#contenedor").page().shake();
+    }
+    else {
+        $("#contenedor").page().transition(page, trans);
+    }
 
-   // Borro el mensaje de error si es que lo hay
-   $('#mensajeForm1').empty();
+    // Borro el mensaje de error si es que lo hay
+    $('#mensajeForm1').empty();
 
-   // Guardo el IGV según el elegido
-   igvSeleccionado = parseInt($('#txtConsiderarIGV').val(), 10);
+    // Guardo el IGV según el elegido
+    igvSeleccionado = parseInt($('#txtConsiderarIGV').val(), 10);
 
-   // Muestro el IGV guardado
-   $('#txtIGV').val(igvSeleccionado);
+    // Muestro el IGV guardado
+    $('#txtIGV').val(igvSeleccionado);
 
-   // Cambio el título del encabezado
-   $('#encabezado').empty();
-   $('#encabezado').append(`
+    // Cambio el título del encabezado
+    $('#encabezado').empty();
+    $('#encabezado').append(`
      <div class="col-md-5" style="margin-top: 10px; cursor: pointer;" data-page-name="1"
                      data-page-trans="slide-in-from-left" id="btnMostrarReg1">
      <i class="fa fa-angle-left"></i> Retroceder 
@@ -422,505 +422,526 @@
      <h4 class="float-left">Generar factura</h4>
      </div>`);
 
- });
+});
 
- // Retrocede al registro 1
- $("#encabezado").on("click", "#btnMostrarReg1", function (ev) {
-   var page = $(ev.target).attr("data-page-name");
+// Retrocede al registro 1
+$("#encabezado").on("click", "#btnMostrarReg1", function (ev) {
+    var page = $(ev.target).attr("data-page-name");
 
-   var trans = $(ev.target).attr("data-page-trans");
+    var trans = $(ev.target).attr("data-page-trans");
 
-   if ($("#contenedor").page().fetch(page) === null) {
+    if ($("#contenedor").page().fetch(page) === null) {
 
-     $("#contenedor").page().shake();
-   }
-   else {
-     $("#contenedor").page().transition(page, trans);
-   }
+        $("#contenedor").page().shake();
+    }
+    else {
+        $("#contenedor").page().transition(page, trans);
+    }
 
-   // Cambio el título del encabezado
-   $('#encabezado').empty();
-   $('#encabezado').append(`<div class="col-md-offset-5 col-md-7">
+    // Cambio el título del encabezado
+    $('#encabezado').empty();
+    $('#encabezado').append(`<div class="col-md-offset-5 col-md-7">
          <h4 class="float-left">Generar factura</h4></div>`);
 
- });
+});
 
 
 
- // Script para excel
- $.support.cors = true;
- //var excelIO = new GC.Spread.Excel.IO();
+// Script para excel
+$.support.cors = true;
+//var excelIO = new GC.Spread.Excel.IO();
 
- var workbook = new ExcelJS.Workbook();
+var workbook = new ExcelJS.Workbook();
 
- // Esto pone borde, valor y fondo a la celda
- function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, esNegrita, colorBorde) {
+// Esto pone borde, valor y fondo a la celda
+function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, esNegrita, colorBorde) {
 
-   // Si le paso un color de fondo, que lo aplique
-   if (colorFondo) {
-     worksheet.getCell(celda).fill = {
-       type: 'pattern',
-       pattern: 'solid',
-       fgColor: { argb: colorFondo }
-     };
-   }
-   if (colorBorde) {
-     worksheet.getCell(celda).border = {
-       top: { style: 'thin', color: { argb: colorBorde } },
-       left: { style: 'thin', color: { argb: colorBorde } },
-       bottom: { style: 'thin', color: { argb: colorBorde } },
-       right: { style: 'thin', color: { argb: colorBorde } }
-     };
-   }
+    // Si le paso un color de fondo, que lo aplique
+    if (colorFondo) {
+        worksheet.getCell(celda).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: colorFondo }
+        };
+    }
+    if (colorBorde) {
+        worksheet.getCell(celda).border = {
+            top: { style: 'thin', color: { argb: colorBorde } },
+            left: { style: 'thin', color: { argb: colorBorde } },
+            bottom: { style: 'thin', color: { argb: colorBorde } },
+            right: { style: 'thin', color: { argb: colorBorde } }
+        };
+    }
 
-   if (valor) {
-     worksheet.getCell(celda).value = {
-       "richText": [
-         {
-           "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
-           "text": valor
-         }
-       ]
-     };
-   }
+    if (valor) {
+        worksheet.getCell(celda).value = {
+            "richText": [
+                {
+                    "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
+                    "text": valor
+                }
+            ]
+        };
+    }
 
 
- }
+}
 
- function establecerFormulaCelda(worksheet, celda, formula, colorFondo, colorBorde) {
-   worksheet.getCell(celda).value = { formula: formula };
+function establecerFormulaCelda(worksheet, celda, formula, colorFondo, colorBorde) {
+    worksheet.getCell(celda).value = { formula: formula };
 
-   // Si le paso un color de fondo, que lo aplique
-   if (colorFondo) {
-     worksheet.getCell(celda).fill = {
-       type: 'pattern',
-       pattern: 'solid',
-       fgColor: { argb: colorFondo }
-     };
-   }
-   if (colorBorde) {
-     worksheet.getCell(celda).border = {
-       top: { style: 'thin', color: { argb: colorBorde } },
-       left: { style: 'thin', color: { argb: colorBorde } },
-       bottom: { style: 'thin', color: { argb: colorBorde } },
-       right: { style: 'thin', color: { argb: colorBorde } }
-     };
-   }
- }
+    // Si le paso un color de fondo, que lo aplique
+    if (colorFondo) {
+        worksheet.getCell(celda).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: colorFondo }
+        };
+    }
+    if (colorBorde) {
+        worksheet.getCell(celda).border = {
+            top: { style: 'thin', color: { argb: colorBorde } },
+            left: { style: 'thin', color: { argb: colorBorde } },
+            bottom: { style: 'thin', color: { argb: colorBorde } },
+            right: { style: 'thin', color: { argb: colorBorde } }
+        };
+    }
+}
 
- function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colorFondo, esNegrita, esBordeGrueso) {
+function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colorFondo, esNegrita, esBordeGrueso) {
 
-   if (valor) {
-     worksheet.getCell(inicio).value = {
-       "richText": [
-         {
-           "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
-           "text": valor
-         }
-       ]
-     };
-   }
+    if (valor) {
+        worksheet.getCell(inicio).value = {
+            "richText": [
+                {
+                    "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
+                    "text": valor
+                }
+            ]
+        };
+    }
 
-   if (colorBorde) {
-     worksheet.getCell(inicio).border = {
-       top: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
-       left: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
-       bottom: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
-       right: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } }
-     };
-   }
-   if (colorFondo) {
-     worksheet.getCell(inicio).fill = {
-       type: 'pattern',
-       pattern: 'solid',
-       fgColor: { argb: colorFondo }
-     };
-   }
+    if (colorBorde) {
+        worksheet.getCell(inicio).border = {
+            top: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+            left: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+            bottom: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+            right: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } }
+        };
+    }
+    if (colorFondo) {
+        worksheet.getCell(inicio).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: colorFondo }
+        };
+    }
 
-   worksheet.getCell(inicio).alignment = { vertical: 'middle', horizontal: 'left' };
-   worksheet.mergeCells(inicio + ":" + fin);
+    worksheet.getCell(inicio).alignment = { vertical: 'middle', horizontal: 'left' };
+    worksheet.mergeCells(inicio + ":" + fin);
 
- }
+}
 
- function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
+function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
 
     // Cabeza del formato
-   establecerValorCelda(worksheet, 'C3', $('#txtGRazonSocial').val());
-   establecerValorCelda(worksheet, 'C4', $('#txtGDireccion').val());
-   establecerValorCelda(worksheet, 'F3', $('#txtGRUC').val());
-   establecerValorCelda(worksheet, 'F4', $('#txtGTelefono').val());
-   establecerValorCelda(worksheet, 'C6', $('#txtGSenores').val());
-   establecerValorCelda(worksheet, 'C7', $('#txtGRUCdestinatario').val());
-   establecerValorCelda(worksheet, 'C8', $('#txtGDireccionDestinatario').val());
-   establecerValorCelda(worksheet, 'F6', $('#txtGFecha').val());
-   establecerValorCelda(worksheet, 'F7', $('#txtGNumCot').val());
-   establecerValorCelda(worksheet, 'F8', $('#txtGValidezOferta').val());
+    establecerValorCelda(worksheet, 'C3', $('#txtGRazonSocial').val());
+    establecerValorCelda(worksheet, 'C4', $('#txtGDireccion').val());
+    establecerValorCelda(worksheet, 'F3', $('#txtGRUC').val());
+    establecerValorCelda(worksheet, 'F4', $('#txtGTelefono').val());
+    establecerValorCelda(worksheet, 'C6', $('#txtGSenores').val());
+    establecerValorCelda(worksheet, 'C7', $('#txtGRUCdestinatario').val());
+    establecerValorCelda(worksheet, 'C8', $('#txtGDireccionDestinatario').val());
+    establecerValorCelda(worksheet, 'F6', $('#txtGFecha').val());
+    establecerValorCelda(worksheet, 'F7', $('#txtGNumCot').val());
+    establecerValorCelda(worksheet, 'F8', $('#txtGValidezOferta').val());
 
 
     // Pie del formato
-   unirCeldas(worksheet, `A${filInicio + 3}`, `G${filInicio + 3}`)
-   unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true)
-   establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true, '000000')
-   establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true, '000000')
-   establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true, '000000')
-   establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true, '000000')
-   establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true, '000000')
-   establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true, '000000')
-
-   establecerValorCelda(worksheet, `D${filInicio + 4}`, $('#txtGFormaPago').val(), null, null, false, '000000')
-   establecerValorCelda(worksheet, `D${filInicio + 5}`, $('#txtGPrecio').val(), null, null, false, '000000')
-   establecerValorCelda(worksheet, `D${filInicio + 6}`, $('#txtGImpuestos').val(), null, null, false, '000000')
-   establecerValorCelda(worksheet, `D${filInicio + 7}`, $('#txtGCB').val(), null, null, false, '000000')
-   establecerValorCelda(worksheet, `D${filInicio + 8}`, $('#txtGEntrega').val(), null, null, false, '000000')
-   establecerValorCelda(worksheet, `D${filInicio + 9}`, $('#txtGGarantia').val(), null, null, false, '000000')
-
-   unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", "000000")
-
-   /*leerFirmaGlassgow().then(data => {
-     var firmaGlassgow = workbook.addImage({
-       base64: data,
-       extension: 'jpeg',
-       base64filename: 'cora.png'
-     });
-     worksheet.addImage(firmaGlassgow, "A23:C25");
-     //`E${filInicio + 4}:G${filInicio + 9}`
-   })*/
-
-
-
- }
-
- function agregarFinPlantillaLH(ws, filaInicio, workbook) {
-   // Agrego los bordes para los cuadritos que faltan
-   let colorBorde = "299b5d";
-   let estiloBorde = "medium";
-
-   ws.getCell(`F{${filaInicio + 1}}`).border = {
-     top: { style: estiloBorde, color: { argb: colorBorde } },
-     left: { style: estiloBorde, color: { argb: colorBorde } }
-   }
-
-   ws.getCell(`F{${filaInicio + 2}}`).border = {
-     left: { style: estiloBorde, color: { argb: colorBorde } }
-   }
-
-   ws.getCell(`F{${filaInicio + 3}}`).border = {
-     left: { style: estiloBorde, color: { argb: colorBorde } },
-     bottom: { style: estiloBorde, color: { argb: colorBorde } }
-   }
-
-   ws.getCell(`G{${filaInicio + 1}}`).border = {
-     top: { style: estiloBorde, color: { argb: colorBorde } },
-     right: { style: estiloBorde, color: { argb: colorBorde } }
-   }
-
-   ws.getCell(`G{${filaInicio + 2}}`).border = {
-     right: { style: estiloBorde, color: { argb: colorBorde } }
-   }
-
-   ws.getCell(`G{${filaInicio + 3}}`).border = {
-     right: { style: estiloBorde, color: { argb: colorBorde } },
-     bottom: { style: estiloBorde, color: { argb: colorBorde } }
-   }
-
-   ws.getCell(`B{${filaInicio + 5}}`).border = {
-     top: { style: estiloBorde, color: { argb: colorBorde } },
-     left: { style: estiloBorde, color: { argb: colorBorde } },
-     right: { style: estiloBorde, color: { argb: colorBorde } },
-     bottom: { style: estiloBorde, color: { argb: colorBorde } }
-   }
-
-   // Agrego el cuadro de observaciones
-   unirCeldas(ws, `B${filaInicio + 5}`, `G${filaInicio + 14}`, "", colorBorde, null, null, true, true)
-   ws.getCell(`B${filaInicio + 5}`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
-   ws.getCell(`B${filaInicio + 5}`).value = {
-     "richText": [
-       {
-         "font": {"bold": true},
-         "text": `OBSERVACIONES:\r\n\r\nGARANTIA: 1 AÑO\r\nCONDICIONES: CONTADO COMERCIAL\r\nENTREGA: 4 DÍAS`
-       }
-     ]
-   };
- }
-
- // Esto es una promesa; y siempre te va a decir la verdad en la cara,
- // te rechace o te resuelva. No como ella, que salió y se besó con alguien
- // más, aun habiendo jurado que me amaba solo a mí.
- function leerPlantilla(excelUrl) {
-
-   return new Promise((resolve, reject) => {
-
-     var req = new XMLHttpRequest();
-     req.open("GET", excelUrl, true);//
-     req.responseType = "arraybuffer";
-
-     req.onload = function (e) {
-       if (req.status == 200) {
-         var data = req.response;
-
-         workbook.xlsx.load(data).then(function (workbook) {
-           resolve(workbook);
-         })
-       } else {
-         reject('El servidor ha respondido con estado ' + req.status);
-       }
+    unirCeldas(worksheet, `A${filInicio + 3}`, `G${filInicio + 3}`)
+    unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true)
+    establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true, '000000')
+    establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true, '000000')
+
+    establecerValorCelda(worksheet, `D${filInicio + 4}`, $('#txtGFormaPago').val(), null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 5}`, $('#txtGPrecio').val(), null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 6}`, $('#txtGImpuestos').val(), null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 7}`, $('#txtGCB').val(), null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 8}`, $('#txtGEntrega').val(), null, null, false, '000000')
+    establecerValorCelda(worksheet, `D${filInicio + 9}`, $('#txtGGarantia').val(), null, null, false, '000000')
+
+    unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", "000000")
+
+    /*leerFirmaGlassgow().then(data => {
+      var firmaGlassgow = workbook.addImage({
+        base64: data,
+        extension: 'jpeg',
+        base64filename: 'cora.png'
+      });
+      worksheet.addImage(firmaGlassgow, "A23:C25");
+      //`E${filInicio + 4}:G${filInicio + 9}`
+    })*/
+
+
+
+}
+
+function agregarFinPlantillaLH(ws, filaInicio, workbook) {
+
+    // Cabeza del formato
+    establecerValorCelda(ws, 'C3', $('#txtLHSenores').val());
+    establecerValorCelda(ws, 'C4', $('#txtLHResponsable').val());
+    establecerValorCelda(ws, 'C5', $('#txtLHDireccionDestinatario').val());
+    establecerValorCelda(ws, 'G3', $('#txtLHRUCDestinatario').val());
+    establecerValorCelda(ws, 'G4', $('#txtLHFecha').val());
+    establecerValorCelda(ws, 'G5', $('#txtLHNumCot').val());
+
+
+    // Agrego los bordes para los cuadritos que faltan
+    let colorBorde = "299b5d";
+    let estiloBorde = "medium";
+
+    ws.getCell(`F{${filaInicio + 1}}`).border = {
+        top: { style: estiloBorde, color: { argb: colorBorde } },
+        left: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`F{${filaInicio + 2}}`).border = {
+        left: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`F{${filaInicio + 3}}`).border = {
+        left: { style: estiloBorde, color: { argb: colorBorde } },
+        bottom: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`G{${filaInicio + 1}}`).border = {
+        top: { style: estiloBorde, color: { argb: colorBorde } },
+        right: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`G{${filaInicio + 2}}`).border = {
+        right: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`G{${filaInicio + 3}}`).border = {
+        right: { style: estiloBorde, color: { argb: colorBorde } },
+        bottom: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    ws.getCell(`B{${filaInicio + 5}}`).border = {
+        top: { style: estiloBorde, color: { argb: colorBorde } },
+        left: { style: estiloBorde, color: { argb: colorBorde } },
+        right: { style: estiloBorde, color: { argb: colorBorde } },
+        bottom: { style: estiloBorde, color: { argb: colorBorde } }
+    }
+
+    // Agrego el cuadro de observaciones
+    unirCeldas(ws, `B${filaInicio + 5}`, `G${filaInicio + 14}`, "", colorBorde, null, null, true, true)
+    ws.getCell(`B${filaInicio + 5}`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
+    ws.getCell(`B${filaInicio + 5}`).value = {
+        "richText": [
+            {
+                "font": { "bold": true },
+                "text": `OBSERVACIONES:\r\n\r\nGARANTIA: ${$('#txtLHGarantia').val()}\r\nCONDICIONES: ${$('#txtLHCondiciones').val()}\r\nENTREGA: ${$('#txtLHEntrega').val()}`
+            }
+        ]
+    };
+}
+
+function agregarFinPlantillaNA(ws, filInicio, workbook) {
+    // Cabeza del formato
+    establecerValorCelda(ws, 'C12', $('#txtNASenores').val());
+    establecerValorCelda(ws, 'C13', $('#txtNAAtencion').val());
+    establecerValorCelda(ws, 'C14', $('#txtNADireccion').val());
+
+}
 
-     }
-     req.send();
+// Esto es una promesa; y siempre te va a decir la verdad en la cara,
+// te rechace o te resuelva. No como ella, que salió y se besó con alguien
+// más, aun habiendo jurado que me amaba solo a mí.
+function leerPlantilla(excelUrl) {
 
-   })
+    return new Promise((resolve, reject) => {
 
- }
+        var req = new XMLHttpRequest();
+        req.open("GET", excelUrl, true);//
+        req.responseType = "arraybuffer";
 
- function leerFirmaGlassgow() {
-   return new Promise((resolve, reject) => {
+        req.onload = function (e) {
+            if (req.status == 200) {
+                var data = req.response;
 
-     var imgUrl = "../plantillas/firmaGlassgow.png";
+                workbook.xlsx.load(data).then(function (workbook) {
+                    resolve(workbook);
+                })
+            } else {
+                reject('El servidor ha respondido con estado ' + req.status);
+            }
 
-     var req = new XMLHttpRequest();
-     req.open("GET", imgUrl, true);//
-     req.responseType = "arraybuffer";
+        }
+        req.send();
 
-     req.onload = function (e) {
-       if (req.status == 200) {
-         var blob = new Uint8Array(req.response);
-         //encode with base64
-         var uri = "data:image/jpeg;base64," + Base64.encode(blob);
-         resolve(uri);
+    })
 
-       } else {
-         reject('El servidor ha respondido con estado ' + req.status);
-       }
+}
 
-     }
-     req.send();
+function leerFirmaGlassgow() {
+    return new Promise((resolve, reject) => {
 
-   })
- }
+        var imgUrl = "../plantillas/firmaGlassgow.png";
 
- function generarExcelGlassgow() {
+        var req = new XMLHttpRequest();
+        req.open("GET", imgUrl, true);//
+        req.responseType = "arraybuffer";
 
+        req.onload = function (e) {
+            if (req.status == 200) {
+                var blob = new Uint8Array(req.response);
+                //encode with base64
+                var uri = "data:image/jpeg;base64," + Base64.encode(blob);
+                resolve(uri);
 
-   // Establece los índices de inicio de las filas y columnas
-   let filInicio = 11;
-   let colInicio = 1;
+            } else {
+                reject('El servidor ha respondido con estado ' + req.status);
+            }
 
-   // Uso promesas para esperar a que termine de leer la plantila
-   leerPlantilla("../plantillas/formatoGlassgowSimple.xlsx")
-     .then((workbook) => {
+        }
+        req.send();
 
-       const ws = workbook.getWorksheet('1');
+    })
+}
 
-       // Por cada uno de los productos, lleno los registros del Excel
-       for (var i = 0; i < productos.length; i++) {
+function generarExcelGlassgow() {
 
-         let producto = productos[i];
-         establecerValorCelda(ws, `A${filInicio}`, producto.id, null, null, false, '000000');
-         establecerValorCelda(ws, `B${filInicio}`, producto.cantidad, null, null, false, '000000');
-         establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, false, '000000');
-         establecerValorCelda(ws, `D${filInicio}`, producto.descripcion, null, null, false, '000000');
-         establecerValorCelda(ws, `E${filInicio}`, producto.marca, null, null, false, '000000');
-         establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '000000');
-         //establecerValorCelda(ws, `G${filInicio}`, producto.precioConIGV);
 
-         // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
-         establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((B${(filInicio)}*F${(filInicio)}),2)`, null, '000000')
+    // Establece los índices de inicio de las filas y columnas
+    let filInicio = 11;
+    let colInicio = 1;
 
-         filInicio++;
-       }
+    // Uso promesas para esperar a que termine de leer la plantila
+    leerPlantilla("../plantillas/formatoGlassgowSimple.xlsx")
+        .then((workbook) => {
 
-       // Para los totales de todos los registros
-       // Primero, el total (Suma simple)
-       establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true, '000000');
-       establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC(SUM(G11:G${(filInicio - 1)}),2)`, null, '000000')
+            const ws = workbook.getWorksheet('1');
 
-       // Luego, el subtotal (precioConIGV*100)/(100+igvSeleccionado)
-       establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true, '000000');
-       establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC(((G${filInicio + 2}*100)/(100+${igvSeleccionado})),2)`, null, '000000')
+            // Por cada uno de los productos, lleno los registros del Excel
+            for (var i = 0; i < productos.length; i++) {
 
-       // Luego, el IGV (total-subtotal)
-       establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true), '000000';
-       establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC((G${filInicio + 2}-G${filInicio}),2)`, null, '000000')
+                let producto = productos[i];
+                establecerValorCelda(ws, `A${filInicio}`, producto.id, null, null, false, '000000');
+                establecerValorCelda(ws, `B${filInicio}`, producto.cantidad, null, null, false, '000000');
+                establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, false, '000000');
+                establecerValorCelda(ws, `D${filInicio}`, producto.descripcion, null, null, false, '000000');
+                establecerValorCelda(ws, `E${filInicio}`, producto.marca, null, null, false, '000000');
+                establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '000000');
+                //establecerValorCelda(ws, `G${filInicio}`, producto.precioConIGV);
 
+                // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
+                establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((B${(filInicio)}*F${(filInicio)}),2)`, null, '000000')
 
+                filInicio++;
+            }
 
-       // Luego, establezco la parte final para la plantilla de Glassgow
-       agregarFinPlantillaGlassgow(ws, filInicio, workbook);
+            // Para los totales de todos los registros
+            // Primero, el total (Suma simple)
+            establecerValorCelda(ws, `F${filInicio + 2}`, "TOTAL", "ffffff", "0b5961", true, '000000');
+            establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC(SUM(G11:G${(filInicio - 1)}),2)`, null, '000000')
 
-       guardarExcel(workbook);
-     })
-     .catch((error) => {
-       alert(error);
-     })
+            // Luego, el subtotal (precioConIGV*100)/(100+igvSeleccionado)
+            establecerValorCelda(ws, `F${filInicio}`, "SUBTOTAL", "ffffff", "0b5961", true, '000000');
+            establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC(((G${filInicio + 2}*100)/(100+${igvSeleccionado})),2)`, null, '000000')
 
- }
+            // Luego, el IGV (total-subtotal)
+            establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true), '000000';
+            establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC((G${filInicio + 2}-G${filInicio}),2)`, null, '000000')
 
- function generarExcelLH() {
 
-   // Establece los índices de inicio de las filas y columnas
-   let filInicio = 9;
-   let colInicio = 2;
 
-   // Uso promesas para esperar a que termine de leer la plantila
-   leerPlantilla("../plantillas/formatoLHSimple.xlsx")
-     .then((workbook) => {
+            // Luego, establezco la parte final para la plantilla de Glassgow
+            agregarFinPlantillaGlassgow(ws, filInicio, workbook);
 
-       const ws = workbook.getWorksheet('1');
+            guardarExcel(workbook);
+        })
+        .catch((error) => {
+            alert(error);
+        })
 
-       // Por cada uno de los productos, lleno los registros del Excel
-       for (var i = 0; i < productos.length; i++) {
+}
 
-         let producto = productos[i];
+function generarExcelLH() {
 
-         // Este formato requiere unir las celdas B y C de descripción
-         unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion, '28a98a');
-         establecerValorCelda(ws, `D${filInicio}`, producto.marca, null, null, false, '28a98a')
-         establecerValorCelda(ws, `E${filInicio}`, producto.cantidad, null, null, false, '28a98a');
-         establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '28a98a');
+    // Establece los índices de inicio de las filas y columnas
+    let filInicio = 9;
+    let colInicio = 2;
 
-         // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
-         establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((E${(filInicio)}*F${(filInicio)}),2)`, null, '28a98a');
+    // Uso promesas para esperar a que termine de leer la plantila
+    leerPlantilla("../plantillas/formatoLHSimple.xlsx")
+        .then((workbook) => {
 
-         filInicio++;
-       }
+            const ws = workbook.getWorksheet('1');
 
-       // Para los totales de todos los registros
-       // Primero, el total (Suma simple)
-       establecerValorCelda(ws, `F${filInicio + 3}`, "TOTAL:", null, null, true, '28a98a');
-       establecerFormulaCelda(ws, `G${filInicio + 3}`, `=TRUNC(SUM(G9:G${(filInicio - 1)}),2)`, null, '28a98a');
+            // Por cada uno de los productos, lleno los registros del Excel
+            for (var i = 0; i < productos.length; i++) {
 
-       // Luego el subtotal (precioConIGV*100)/(100+igvSeleccionado)
-       establecerValorCelda(ws, `F${filInicio + 1}`, "SUB TOTAL:", null, null, true, '28a98a');
-       establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC(((G${filInicio + 3}*100)/(100+${igvSeleccionado})),2)`, null, '28a98a');
+                let producto = productos[i];
 
-       // Luego, el IGV (total-subtotal)
-       establecerValorCelda(ws, `F${filInicio + 2}`, "I.G.V.:", null, null, true, '28a98a');
-       establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC((G${filInicio + 3}-G${filInicio + 1}),2)`, null, '28a98a');
+                // Este formato requiere unir las celdas B y C de descripción
+                unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion, '28a98a');
+                establecerValorCelda(ws, `D${filInicio}`, producto.marca, null, null, false, '28a98a')
+                establecerValorCelda(ws, `E${filInicio}`, producto.cantidad, null, null, false, '28a98a');
+                establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '28a98a');
 
-       // Luego, establezco la parte final para la plantilla de LH
-       agregarFinPlantillaLH(ws, filInicio, workbook);
+                // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
+                establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((E${(filInicio)}*F${(filInicio)}),2)`, null, '28a98a');
 
-       guardarExcel(workbook);
-     })
-     .catch((error) => {
-       alert(error);
-     })
+                filInicio++;
+            }
 
- }
+            // Para los totales de todos los registros
+            // Primero, el total (Suma simple)
+            establecerValorCelda(ws, `F${filInicio + 3}`, "TOTAL:", null, null, true, '28a98a');
+            establecerFormulaCelda(ws, `G${filInicio + 3}`, `=TRUNC(SUM(G9:G${(filInicio - 1)}),2)`, null, '28a98a');
 
- function generarExcelNA() {
+            // Luego el subtotal (precioConIGV*100)/(100+igvSeleccionado)
+            establecerValorCelda(ws, `F${filInicio + 1}`, "SUB TOTAL:", null, null, true, '28a98a');
+            establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC(((G${filInicio + 3}*100)/(100+${igvSeleccionado})),2)`, null, '28a98a');
 
-   // Establece los índices de inicio de las filas y columnas
-   let filInicio = 18;
-   let colInicio = 1;
+            // Luego, el IGV (total-subtotal)
+            establecerValorCelda(ws, `F${filInicio + 2}`, "I.G.V.:", null, null, true, '28a98a');
+            establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC((G${filInicio + 3}-G${filInicio + 1}),2)`, null, '28a98a');
 
-   // Uso promesas para esperar a que termine de leer la plantila
-   leerPlantilla("../plantillas/formatoNASimple.xlsx")
-     .then((workbook) => {
+            // Luego, establezco la parte final para la plantilla de LH
+            agregarFinPlantillaLH(ws, filInicio, workbook);
 
-       const ws = workbook.getWorksheet('1');
-
-       // Por cada uno de los productos, lleno los registros del Excel
-       for (var i = 0; i < productos.length; i++) {
+            guardarExcel(workbook);
+        })
+        .catch((error) => {
+            alert(error);
+        })
 
-         let producto = productos[i];
-         // Este formato requiere unir las celdas A y B de cantidad
-         unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, producto.cantidad, '000000');
-         establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, null, '000000');
-
-         // Este formato requiere unir las celdas D a G de descripción
-         unirCeldas(ws, `D${filInicio}`, `G${filInicio}`, producto.descripcion, '000000');
-         establecerValorCelda(ws, `H${filInicio}`, producto.precio, null, null, null, '000000');
-
-         // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
-         establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC((A${(filInicio)}*H${(filInicio)}),2)`, null, '000000');
-
-         filInicio++;
-       }
-
-       // Para los totales de todos los registros
-       // Primero, el total (Suma simple)
-       establecerValorCelda(ws, `H${filInicio}`, "Total", "000000", "ffffff", false, '000000');
-       establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC(SUM(I18:I${(filInicio - 1)}),2)`, null, '000000');
-
-       unirCeldas(ws, `A${filInicio + 5}`, `I${filInicio + 5}`, "LOS PRECIOS INCLUYEN EL IGV Y ESTAN EXPRESADOS EN SOLES", null, null, false);
-       unirCeldas(ws, `A${filInicio + 6}`, `I${filInicio + 6}`, "ENTREGA 5 DIAS UTILES", null, null, false);
-       unirCeldas(ws, `A${filInicio + 7}`, `I${filInicio + 7}`, "VENCIMIENTO DE 1 AÑO", null, null, false);
-
-       guardarExcel(workbook);
-     })
-     .catch((error) => {
-       alert(error);
-     })
-
- }
-
- function guardarExcel(workbook) {
-   /*const options = {
-         base64: true,
-       };
-       */
-   var nombreArchivo = "exportado";
-   if (nombreArchivo.substr(-5, 5) !== '.xlsx') {
-     nombreArchivo += '.xlsx';
-   }
-   workbook.xlsx
-     .writeBuffer(/*options*/)
-     .then(buffer => {
-       saveAs(new Blob([buffer], { type: "" }), nombreArchivo)
-     })
-     .catch(error => {
-       alert(JSON.stringify(error))
-       throw error;
-     });
- }
-
- $('#btnExportarGlassgow').click(function () {
-   generarExcelGlassgow();
- })
-
- $('#btnExportarLH').click(function () {
-   generarExcelLH();
- })
-
- $('#btnExportarNA').click(function () {
-   generarExcelNA();
- })
-
- // Clase utilitaria
- var Base64 = {
-   _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-   // public method for encoding
-   encode: function (input) {
-     var output = "";
-     var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-     var i = 0;
-     //input = Base64._utf8_encode(input); //comment out to encode binary file(like image)
-
-     while (i < input.length) {
-
-       chr1 = input[i++];
-       chr2 = input[i++];
-       chr3 = input[i++];
-
-       enc1 = chr1 >> 2;
-       enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-       enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-       enc4 = chr3 & 63;
-
-       if (isNaN(chr2)) {
-         enc3 = enc4 = 64;
-       } else if (isNaN(chr3)) {
-         enc4 = 64;
-       }
-       output = output +
-         Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
-         Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
-     }
-     return output;
-   }
- }
-
- /*https://aymkdn.github.io/ExcelPlus/*
- /*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
+}
+
+function generarExcelNA() {
+
+    // Establece los índices de inicio de las filas y columnas
+    let filInicio = 18;
+    let colInicio = 1;
+
+    // Uso promesas para esperar a que termine de leer la plantila
+    leerPlantilla("../plantillas/formatoNASimple.xlsx")
+        .then((workbook) => {
+
+            const ws = workbook.getWorksheet('1');
+
+            // Por cada uno de los productos, lleno los registros del Excel
+            for (var i = 0; i < productos.length; i++) {
+
+                let producto = productos[i];
+                // Este formato requiere unir las celdas A y B de cantidad
+                unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, producto.cantidad, '000000');
+                establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, null, '000000');
+
+                // Este formato requiere unir las celdas D a G de descripción
+                unirCeldas(ws, `D${filInicio}`, `G${filInicio}`, producto.descripcion, '000000');
+                establecerValorCelda(ws, `H${filInicio}`, producto.precio, null, null, null, '000000');
+
+                // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
+                establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC((A${(filInicio)}*H${(filInicio)}),2)`, null, '000000');
+
+                filInicio++;
+            }
+
+            // Para los totales de todos los registros
+            // Primero, el total (Suma simple)
+            establecerValorCelda(ws, `H${filInicio}`, "Total", "000000", "ffffff", false, '000000');
+            establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC(SUM(I18:I${(filInicio - 1)}),2)`, null, '000000');
+
+            unirCeldas(ws, `A${filInicio + 5}`, `I${filInicio + 5}`, $('#txtNAAnotacion').val(), null, null, false);
+            unirCeldas(ws, `A${filInicio + 6}`, `I${filInicio + 6}`, $('#txtNAEntrega').val(), null, null, false);
+            unirCeldas(ws, `A${filInicio + 7}`, `I${filInicio + 7}`, $('#txtNAVencimiento').val(), null, null, false);
+
+            // Luego, establezco la parte final para la plantilla de NA
+            agregarFinPlantillaNA(ws, filInicio, workbook);
+
+            guardarExcel(workbook);
+        })
+        .catch((error) => {
+            alert(error);
+        })
+
+}
+
+function guardarExcel(workbook) {
+    /*const options = {
+          base64: true,
+        };
+        */
+    var nombreArchivo = "exportado";
+    if (nombreArchivo.substr(-5, 5) !== '.xlsx') {
+        nombreArchivo += '.xlsx';
+    }
+    workbook.xlsx
+        .writeBuffer(/*options*/)
+        .then(buffer => {
+            saveAs(new Blob([buffer], { type: "" }), nombreArchivo)
+        })
+        .catch(error => {
+            alert(JSON.stringify(error))
+            throw error;
+        });
+}
+
+$('#btnExportarGlassgow').click(function () {
+    generarExcelGlassgow();
+})
+
+$('#btnExportarLH').click(function () {
+    generarExcelLH();
+})
+
+$('#btnExportarNA').click(function () {
+    generarExcelNA();
+})
+
+// Clase utilitaria
+var Base64 = {
+    _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+    // public method for encoding
+    encode: function (input) {
+        var output = "";
+        var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+        var i = 0;
+        //input = Base64._utf8_encode(input); //comment out to encode binary file(like image)
+
+        while (i < input.length) {
+
+            chr1 = input[i++];
+            chr2 = input[i++];
+            chr3 = input[i++];
+
+            enc1 = chr1 >> 2;
+            enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+            enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+            enc4 = chr3 & 63;
+
+            if (isNaN(chr2)) {
+                enc3 = enc4 = 64;
+            } else if (isNaN(chr3)) {
+                enc4 = 64;
+            }
+            output = output +
+                Base64._keyStr.charAt(enc1) + Base64._keyStr.charAt(enc2) +
+                Base64._keyStr.charAt(enc3) + Base64._keyStr.charAt(enc4);
+        }
+        return output;
+    }
+}
+
+/*https://aymkdn.github.io/ExcelPlus/*
+/*https://www.grapecity.com/blogs/how-to-importexport-excel-files-using-javascript-and-spread-sheets*/
