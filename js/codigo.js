@@ -544,55 +544,88 @@ function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colo
 
 function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
 
-    // Cabeza del formato
-    establecerValorCelda(worksheet, 'C3', $('#txtGRazonSocial').val());
-    establecerValorCelda(worksheet, 'C4', $('#txtGDireccion').val());
-    establecerValorCelda(worksheet, 'F3', $('#txtGRUC').val());
-    establecerValorCelda(worksheet, 'F4', $('#txtGTelefono').val());
-    establecerValorCelda(worksheet, 'C6', $('#txtGSenores').val());
-    establecerValorCelda(worksheet, 'C7', $('#txtGRUCdestinatario').val());
-    establecerValorCelda(worksheet, 'C8', $('#txtGDireccionDestinatario').val());
-    establecerValorCelda(worksheet, 'F6', $('#txtGFecha').val());
-    establecerValorCelda(worksheet, 'F7', $('#txtGNumCot').val());
-    establecerValorCelda(worksheet, 'F8', $('#txtGValidezOferta').val());
+    return new Promise((resolve, reject) => {
 
+        // Cabeza del formato
+        establecerValorCelda(worksheet, 'C3', $('#txtGRazonSocial').val());
+        establecerValorCelda(worksheet, 'C4', $('#txtGDireccion').val());
+        establecerValorCelda(worksheet, 'F3', $('#txtGRUC').val());
+        establecerValorCelda(worksheet, 'F4', $('#txtGTelefono').val());
+        establecerValorCelda(worksheet, 'C6', $('#txtGSenores').val());
+        establecerValorCelda(worksheet, 'C7', $('#txtGRUCdestinatario').val());
+        establecerValorCelda(worksheet, 'C8', $('#txtGDireccionDestinatario').val());
+        establecerValorCelda(worksheet, 'F6', $('#txtGFecha').val());
+        establecerValorCelda(worksheet, 'F7', $('#txtGNumCot').val());
+        establecerValorCelda(worksheet, 'F8', $('#txtGValidezOferta').val());
 
-    // Pie del formato
-    unirCeldas(worksheet, `A${filInicio + 3}`, `G${filInicio + 3}`)
-    unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true)
-    establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true, '000000')
-    establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true, '000000')
-    establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true, '000000')
-    establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true, '000000')
-    establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true, '000000')
-    establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true, '000000')
+        // Pie del formato
+        unirCeldas(worksheet, `A${filInicio + 3}`, `G${filInicio + 3}`)
+        unirCeldas(worksheet, `A${filInicio + 4}`, `B${filInicio + 9}`, "CONDICIONES:", true, "ffffff", "0b5961", true)
+        establecerValorCelda(worksheet, `C${filInicio + 4}`, "FORMA DE PAGO:", "ffffff", "0b5961", true, '000000')
+        establecerValorCelda(worksheet, `C${filInicio + 5}`, "PRECIO:", "ffffff", "0b5961", true, '000000')
+        establecerValorCelda(worksheet, `C${filInicio + 6}`, "IMPUESTOS:", "ffffff", "0b5961", true, '000000')
+        establecerValorCelda(worksheet, `C${filInicio + 7}`, "CUENTA BANCARIA- CCI:", "ffffff", "0b5961", true, '000000')
+        establecerValorCelda(worksheet, `C${filInicio + 8}`, "ENTREGA:", "ffffff", "0b5961", true, '000000')
+        establecerValorCelda(worksheet, `C${filInicio + 9}`, "GARANTÍA", "ffffff", "0b5961", true, '000000')
 
-    establecerValorCelda(worksheet, `D${filInicio + 4}`, $('#txtGFormaPago').val(), null, null, false, '000000')
-    establecerValorCelda(worksheet, `D${filInicio + 5}`, $('#txtGPrecio').val(), null, null, false, '000000')
-    establecerValorCelda(worksheet, `D${filInicio + 6}`, $('#txtGImpuestos').val(), null, null, false, '000000')
-    establecerValorCelda(worksheet, `D${filInicio + 7}`, $('#txtGCB').val(), null, null, false, '000000')
-    establecerValorCelda(worksheet, `D${filInicio + 8}`, $('#txtGEntrega').val(), null, null, false, '000000')
-    establecerValorCelda(worksheet, `D${filInicio + 9}`, $('#txtGGarantia').val(), null, null, false, '000000')
+        establecerValorCelda(worksheet, `D${filInicio + 4}`, $('#txtGFormaPago').val(), null, null, false, '000000')
+        establecerValorCelda(worksheet, `D${filInicio + 5}`, $('#txtGPrecio').val(), null, null, false, '000000')
+        establecerValorCelda(worksheet, `D${filInicio + 6}`, $('#txtGImpuestos').val(), null, null, false, '000000')
+        establecerValorCelda(worksheet, `D${filInicio + 7}`, $('#txtGCB').val(), null, null, false, '000000')
+        establecerValorCelda(worksheet, `D${filInicio + 8}`, $('#txtGEntrega').val(), null, null, false, '000000')
+        establecerValorCelda(worksheet, `D${filInicio + 9}`, $('#txtGGarantia').val(), null, null, false, '000000')
 
-    unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", "000000")
+        unirCeldas(worksheet, `E${filInicio + 4}`, `G${filInicio + 9}`, "", "000000")
 
-    /*leerFirmaGlassgow().then(data => {
-      var firmaGlassgow = workbook.addImage({
-        base64: data,
-        extension: 'jpeg',
-        base64filename: 'cora.png'
-      });
-      worksheet.addImage(firmaGlassgow, "A23:C25");
-      //`E${filInicio + 4}:G${filInicio + 9}`
-    })*/
+        // Verifico si el usuario quiere que se muestre la imagen
+        if ($('#chkGenerarFirmaGlassgow').prop('checked')) {
 
+            leerImagen("../plantillas/firmaGlassgow.png", "png").then(data => {
 
+                var firmaGlassgow = workbook.addImage({
+                    base64: data,
+                    extension: 'png',
+                });
+
+                // Aquí agrego la imagen a las celdas que necesito
+                worksheet.addImage(firmaGlassgow, {
+                    tl: { col: 4.1, row: filInicio + 3.2 },
+                    br: { col: 7, row: filInicio + 9 }
+                });
+                //worksheet.addImage(firmaGlassgow,`E${filInicio + 4}:G${filInicio + 9}`);
+
+                resolve("Imagen leída satisfactoriamente");
+            }, error => {
+
+                var mensErr = new Error(error.message);
+                throw mensErr;
+
+            }).catch(error => {
+                console.log("Error : " + error.message);
+                resolve("Error al leer la imagen");
+            })
+        } else {
+            resolve("El usuario decidió no leer la imagen");
+        }
+
+    })
 
 }
 
 function agregarFinPlantillaLH(ws, filaInicio, workbook) {
 
     // Cabeza del formato
+
+    // Agrego los datos de la empresa
+    ws.getCell(`B1`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
+    ws.getCell(`B1`).value = {
+        "richText": [
+            {
+                "text": ` \r\n${$('#txtLHRazonSocial').val()}\r\nRUC: ${$('#txtLHRUC').val()}\r\n${$('#txtLHDireccion').val()}\r\nTELÉFONO: ${$('#txtLHTelefono').val()}\r\nCORREO: ${$('#txtLHCorreo').val()}`
+            }
+        ]
+    };
+
     establecerValorCelda(ws, 'C3', $('#txtLHSenores').val());
     establecerValorCelda(ws, 'C4', $('#txtLHResponsable').val());
     establecerValorCelda(ws, 'C5', $('#txtLHDireccionDestinatario').val());
@@ -690,20 +723,18 @@ function leerPlantilla(excelUrl) {
 
 }
 
-function leerFirmaGlassgow() {
+function leerImagen(imgUrl, extension) {
     return new Promise((resolve, reject) => {
 
-        var imgUrl = "../plantillas/firmaGlassgow.png";
-
         var req = new XMLHttpRequest();
-        req.open("GET", imgUrl, true);//
+        req.open("GET", imgUrl, true);
         req.responseType = "arraybuffer";
 
         req.onload = function (e) {
             if (req.status == 200) {
                 var blob = new Uint8Array(req.response);
                 //encode with base64
-                var uri = "data:image/jpeg;base64," + Base64.encode(blob);
+                var uri = "data:image/" + extension + ";base64," + Base64.encode(blob);
                 resolve(uri);
 
             } else {
@@ -760,12 +791,17 @@ function generarExcelGlassgow() {
             establecerValorCelda(ws, `F${filInicio + 1}`, "IGV", "ffffff", "0b5961", true), '000000';
             establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC((G${filInicio + 2}-G${filInicio}),2)`, null, '000000')
 
-
-
             // Luego, establezco la parte final para la plantilla de Glassgow
-            agregarFinPlantillaGlassgow(ws, filInicio, workbook);
+            agregarFinPlantillaGlassgow(ws, filInicio, workbook)
+                .then(mensaje => {
+                    guardarExcel(workbook);
+                })
 
-            guardarExcel(workbook);
+        }, error => {
+
+            var mensErr = new Error(error.message);
+            throw mensErr;
+
         })
         .catch((error) => {
             alert(error);
