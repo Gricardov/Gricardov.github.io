@@ -50,7 +50,7 @@ function cargarDatosCampos(id) {
     // Muestra los campos en el formulario para poder editarlos
     if (producto) {
         $("#txtDescripcion").val(producto.descripcion);
-        $("#cboMarca").val(producto.marca);
+        $("#txtMarca").val(producto.marca);
         $("#cboUnidad").val(producto.unidad);
         $("#txtCantidad").val(producto.cantidad);
         $("#txtPrecio").val(producto.precio);
@@ -67,7 +67,7 @@ function cargarDatosCampos(id) {
 
 function limpiarCampos() {
     $("#txtDescripcion").val("");
-    $("#cboMarca").prop('selectedIndex', 0);
+    $("#txtMarca").val("");
     $("#cboUnidad").prop('selectedIndex', 0);
     $("#txtCantidad").val("");
     $("#txtPrecio").val("");
@@ -240,7 +240,7 @@ $("#txtPrecio").on('input', function () {
 $("#btnAgregar").click(function (e) {
 
     let descripcion = $("#txtDescripcion").val();
-    let marca = $("#cboMarca").val();
+    let marca = $("#txtMarca").val();
     let unidad = $("#cboUnidad").val();
     let cantidad = parseInt($("#txtCantidad").val(), 10);
     let precio = parseFloat($("#txtPrecio").val());
@@ -277,7 +277,7 @@ $("#btnAgregar").click(function (e) {
 $("#btnActualizar").click(function (e) {
 
     let descripcion = $("#txtDescripcion").val();
-    let marca = $("#cboMarca").val();
+    let marca = $("#txtMarca").val();
     let unidad = $("#cboUnidad").val();
     let cantidad = parseInt($("#txtCantidad").val(), 10);
     let precio = parseFloat($("#txtPrecio").val());
