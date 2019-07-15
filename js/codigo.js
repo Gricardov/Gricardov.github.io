@@ -275,7 +275,7 @@ $("#btnAgregar").click(function (e) {
 
 // Actualizo el registro seleccionado
 $("#btnActualizar").click(function (e) {
-
+//
     let descripcion = $("#txtDescripcion").val();
     let marca = $("#txtMarca").val();
     let unidad = $("#cboUnidad").val();
