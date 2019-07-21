@@ -455,12 +455,21 @@ $("#encabezado").on("click", "#btnMostrarReg1", function (ev) {
 
 // Script para excel
 $.support.cors = true;
-//var excelIO = new GC.Spread.Excel.IO();
 
 var workbook = new ExcelJS.Workbook();
 
 // Esto pone borde, valor y fondo a la celda
-function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, esNegrita, colorBorde) {
+function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, esNegrita, colorBorde, fuente, tamano, esBordeGrueso) {
+
+    // Valido si se ha pasado un valor para la fuente. Si no, que use calibri
+    let fuenteAux = "Calibri";
+    let tamanoAux = 11;
+    if (fuente) {
+        fuenteAux = fuente;
+    }
+    if (tamano) {
+        tamanoAux = tamano;
+    }
 
     // Si le paso un color de fondo, que lo aplique
     if (colorFondo) {
@@ -470,21 +479,23 @@ function establecerValorCelda(worksheet, celda, valor, colorFuente, colorFondo, 
             fgColor: { argb: colorFondo }
         };
     }
+
     if (colorBorde) {
         worksheet.getCell(celda).border = {
-            top: { style: 'thin', color: { argb: colorBorde } },
-            left: { style: 'thin', color: { argb: colorBorde } },
-            bottom: { style: 'thin', color: { argb: colorBorde } },
-            right: { style: 'thin', color: { argb: colorBorde } }
+            top: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+            left: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+            bottom: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
+            right: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } }
         };
     }
 
     if (valor) {
+        let valorAux = valor.toString().toUpperCase();
         worksheet.getCell(celda).value = {
             "richText": [
                 {
-                    "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
-                    "text": valor
+                    "font": { "bold": esNegrita, "size": tamanoAux, "color": { "argb": colorFuente }, "name": fuenteAux },
+                    "text": valorAux
                 }
             ]
         };
@@ -514,34 +525,9 @@ function establecerFormulaCelda(worksheet, celda, formula, colorFondo, colorBord
     }
 }
 
-function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colorFondo, esNegrita, esBordeGrueso) {
+function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colorFondo, esNegrita, esBordeGrueso, fuente, tamano) {
 
-    if (valor) {
-        worksheet.getCell(inicio).value = {
-            "richText": [
-                {
-                    "font": { "bold": esNegrita, "color": { "argb": colorFuente } },
-                    "text": valor
-                }
-            ]
-        };
-    }
-
-    if (colorBorde) {
-        worksheet.getCell(inicio).border = {
-            top: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
-            left: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
-            bottom: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } },
-            right: { style: esBordeGrueso ? 'medium' : 'thin', color: { argb: colorBorde } }
-        };
-    }
-    if (colorFondo) {
-        worksheet.getCell(inicio).fill = {
-            type: 'pattern',
-            pattern: 'solid',
-            fgColor: { argb: colorFondo }
-        };
-    }
+    establecerValorCelda(worksheet, inicio, valor, colorFuente, colorFondo, esNegrita, colorBorde, fuente, tamano, esBordeGrueso);
 
     worksheet.getCell(inicio).alignment = { vertical: 'middle', horizontal: 'left' };
     worksheet.mergeCells(inicio + ":" + fin);
@@ -601,9 +587,7 @@ function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
                 // Aquí agrego la imagen a las celdas que necesito
                 worksheet.addImage(firmaGlassgow, {
                     tl: { col: 4.9, row: filInicio + 4 },
-                    ext: { width: 170, height: 80 },
-                    editAs: 'absolute'
-                    
+                    ext: { width: 170, height: 80 }
                 });
 
                 resolve("Imagen leída satisfactoriamente");
@@ -636,20 +620,16 @@ function agregarFinPlantillaLH(ws, filaInicio, workbook) {
 
     // Agrego los datos de la empresa
     ws.getCell(`B1`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
-    ws.getCell(`B1`).value = {
-        "richText": [
-            {
-                "text": ` \r\n${$('#txtLHRazonSocial').val()}\r\nRUC: ${$('#txtLHRUC').val()}\r\n${$('#txtLHDireccion').val()}\r\nTELÉFONO: ${$('#txtLHTelefono').val()}\r\nCORREO: ${$('#txtLHCorreo').val()}`
-            }
-        ]
-    };
 
-    establecerValorCelda(ws, 'C3', $('#txtLHSenores').val());
-    establecerValorCelda(ws, 'C4', $('#txtLHResponsable').val());
-    establecerValorCelda(ws, 'C5', $('#txtLHDireccionDestinatario').val());
-    establecerValorCelda(ws, 'G3', $('#txtLHRUCDestinatario').val());
-    establecerValorCelda(ws, 'G4', dia + '/' + mes + '/' + anio);
-    establecerValorCelda(ws, 'G5', $('#txtLHNumCot').val());
+    establecerValorCelda(ws, 'B1', ` \r\n${$('#txtLHRazonSocial').val()}\r\nRUC: ${$('#txtLHRUC').val()}\r\n${$('#txtLHDireccion').val()}\r\nTELÉFONO: ${$('#txtLHTelefono').val()}\r\nCORREO: ${$('#txtLHCorreo').val()}`,
+    '516379', null, true, null, 'Leelawadee', 11, false)
+
+    establecerValorCelda(ws, 'C3', $('#txtLHSenores').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+    establecerValorCelda(ws, 'C4', $('#txtLHResponsable').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+    establecerValorCelda(ws, 'C5', $('#txtLHDireccionDestinatario').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+    establecerValorCelda(ws, 'G3', $('#txtLHRUCDestinatario').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+    establecerValorCelda(ws, 'G4', dia + '/' + mes + '/' + anio, '516379', null, true, null, 'Leelawadee', 12, false);
+    establecerValorCelda(ws, 'G5', $('#txtLHNumCot').val(), '516379', null, true, null, 'Leelawadee', 12, false);
 
 
     // Agrego los bordes para los cuadritos que faltan
@@ -692,16 +672,12 @@ function agregarFinPlantillaLH(ws, filaInicio, workbook) {
     }
 
     // Agrego el cuadro de observaciones
-    unirCeldas(ws, `B${filaInicio + 5}`, `G${filaInicio + 14}`, "", colorBorde, null, null, true, true)
+
+    unirCeldas(ws, `B${filaInicio + 5}`, `G${filaInicio + 14}`, `OBSERVACIONES:\r\n\r\nGARANTIA: ${$('#txtLHGarantia').val()}\r\nCONDICIONES: ${$('#txtLHCondiciones').val()}\r\nENTREGA: ${$('#txtLHEntrega').val()}`,
+        colorBorde, '516379', null, true, true, 'Leelawadee', '12');
     ws.getCell(`B${filaInicio + 5}`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
-    ws.getCell(`B${filaInicio + 5}`).value = {
-        "richText": [
-            {
-                "font": { "bold": true },
-                "text": `OBSERVACIONES:\r\n\r\nGARANTIA: ${$('#txtLHGarantia').val()}\r\nCONDICIONES: ${$('#txtLHCondiciones').val()}\r\nENTREGA: ${$('#txtLHEntrega').val()}`
-            }
-        ]
-    };
+
+
 }
 
 function agregarFinPlantillaNA(ws, filInicio, workbook) {
@@ -857,10 +833,10 @@ function generarExcelLH() {
                 let producto = productos[i];
 
                 // Este formato requiere unir las celdas B y C de descripción
-                unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion, '28a98a');
-                establecerValorCelda(ws, `D${filInicio}`, producto.marca, null, null, false, '28a98a')
-                establecerValorCelda(ws, `E${filInicio}`, `${producto.cantidad}`, null, null, false, '28a98a');
-                establecerValorCelda(ws, `F${filInicio}`, `${producto.precio}`, null, null, false, '28a98a');
+                unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion, '28a98a', null, null, false, false, 'Leelawadee', 11);
+                establecerValorCelda(ws, `D${filInicio}`, producto.marca, null, null, false, '28a98a', 'Leelawadee', 11, false)
+                establecerValorCelda(ws, `E${filInicio}`, `${producto.cantidad}`, null, null, false, '28a98a', 'Leelawadee', 11, false);
+                establecerValorCelda(ws, `F${filInicio}`, `${producto.precio}`, null, null, false, '28a98a', 'Leelawadee', 11, false);
 
                 // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
                 establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((E${(filInicio)}*F${(filInicio)}),2)`, null, '28a98a');
@@ -870,15 +846,15 @@ function generarExcelLH() {
 
             // Para los totales de todos los registros
             // Primero, el total (Suma simple)
-            establecerValorCelda(ws, `F${filInicio + 3}`, "TOTAL:", null, null, true, '28a98a');
+            establecerValorCelda(ws, `F${filInicio + 3}`, "TOTAL:", '516379', null, true, '28a98a', 'Leelawadee', 13, true);
             establecerFormulaCelda(ws, `G${filInicio + 3}`, `=TRUNC(SUM(G9:G${(filInicio - 1)}),2)`, null, '28a98a');
 
             // Luego el subtotal (precioConIGV*100)/(100+igvSeleccionado)
-            establecerValorCelda(ws, `F${filInicio + 1}`, "SUB TOTAL:", null, null, true, '28a98a');
+            establecerValorCelda(ws, `F${filInicio + 1}`, "SUB TOTAL:", '516379', null, true, '28a98a', 'Leelawadee', 13, true);
             establecerFormulaCelda(ws, `G${filInicio + 1}`, `=TRUNC(((G${filInicio + 3}*100)/(100+${igvSeleccionado})),2)`, null, '28a98a');
 
             // Luego, el IGV (total-subtotal)
-            establecerValorCelda(ws, `F${filInicio + 2}`, "I.G.V.:", null, null, true, '28a98a');
+            establecerValorCelda(ws, `F${filInicio + 2}`, "I.G.V.:", '516379', null, true, '28a98a', 'Leelawadee', 13, true);
             establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC((G${filInicio + 3}-G${filInicio + 1}),2)`, null, '28a98a');
 
             // Luego, establezco la parte final para la plantilla de LH
