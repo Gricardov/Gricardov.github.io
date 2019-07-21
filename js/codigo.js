@@ -69,11 +69,11 @@ function limpiarCampos() {
     $("#txtDescripcion").val("");
     $("#txtMarca").val("");
     $("#cboUnidad").prop('selectedIndex', 0);
-    $("#txtCantidad").val("");
-    $("#txtPrecio").val("");
-    $("#txtPrecioSinIGV").val("");
-    $("#txtIGVCalculado").val("");
-    $("#txtPrecioConIGV").val("");
+    $("#txtCantidad").val("0");
+    $("#txtPrecio").val("0.00");
+    $("#txtPrecioSinIGV").val("0.00");
+    $("#txtIGVCalculado").val("0.00");
+    $("#txtPrecioConIGV").val("0.00");
 
 }
 
@@ -247,9 +247,9 @@ $("#btnAgregar").click(function (e) {
     let precioSinIGV = parseFloat($("#txtPrecioSinIGV").val());
     let igvCalculado = parseFloat($("#txtIGVCalculado").val());
     let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
-
     // Primero, verifico si hay campos vacíos 
-    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioSinIGV != "" && precioConIGV != "") {
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != null && !isNaN(cantidad) && precio != null && !isNaN(precio)
+        && precioSinIGV != null && !isNaN(precioSinIGV) && precioConIGV != null && !isNaN(precioConIGV)) {
         // Si todo está bien, que se agregue al arreglo
         $('#mensajeForm2').empty();
 
@@ -275,7 +275,7 @@ $("#btnAgregar").click(function (e) {
 
 // Actualizo el registro seleccionado
 $("#btnActualizar").click(function (e) {
-//
+    //
     let descripcion = $("#txtDescripcion").val();
     let marca = $("#txtMarca").val();
     let unidad = $("#cboUnidad").val();
@@ -286,7 +286,8 @@ $("#btnActualizar").click(function (e) {
     let precioConIGV = parseFloat($("#txtPrecioConIGV").val());
 
     // Primero, verifico si hay campos vacíos 
-    if (descripcion != "" && marca != "" && unidad != "" && cantidad != "" && precio != "" && precioConIGV != "" && precioSinIGV != "") {
+    if (descripcion != "" && marca != "" && unidad != "" && cantidad != null && !isNaN(cantidad) && precio != null && !isNaN(precio)
+        && precioSinIGV != null && !isNaN(precioSinIGV) && precioConIGV != null && !isNaN(precioConIGV)) {
         // Si todo está bien, que se agregue al arreglo
         $('#mensajeForm2').empty();
 
@@ -549,11 +550,11 @@ function unirCeldas(worksheet, inicio, fin, valor, colorBorde, colorFuente, colo
 
 function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
 
-    let fechaSeleccionada=new Date($('#txtGFecha').val());
-    let dia=fechaSeleccionada.getDate()+1;
-    let mes=fechaSeleccionada.getMonth()+1<10?'0'+(fechaSeleccionada.getMonth()+1).toString():fechaSeleccionada.getMonth()+1<10;
-    let anio=fechaSeleccionada.getFullYear();
-    
+    let fechaSeleccionada = new Date($('#txtGFecha').val());
+    let dia = fechaSeleccionada.getDate() + 1;
+    let mes = fechaSeleccionada.getMonth() + 1 < 10 ? '0' + (fechaSeleccionada.getMonth() + 1).toString() : fechaSeleccionada.getMonth() + 1 < 10;
+    let anio = fechaSeleccionada.getFullYear();
+
     return new Promise((resolve, reject) => {
 
         // Cabeza del formato
@@ -564,7 +565,7 @@ function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
         establecerValorCelda(worksheet, 'C6', $('#txtGSenores').val());
         establecerValorCelda(worksheet, 'C7', $('#txtGRUCdestinatario').val());
         establecerValorCelda(worksheet, 'C8', $('#txtGDireccionDestinatario').val());
-        establecerValorCelda(worksheet, 'F6', dia+'/'+mes+'/'+anio);
+        establecerValorCelda(worksheet, 'F6', dia + '/' + mes + '/' + anio);
         establecerValorCelda(worksheet, 'F7', $('#txtGNumCot').val());
         establecerValorCelda(worksheet, 'F8', $('#txtGValidezOferta').val());
 
@@ -625,10 +626,10 @@ function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
 function agregarFinPlantillaLH(ws, filaInicio, workbook) {
 
     // Formateo la fecha seleccionada
-    let fechaSeleccionada=new Date($('#txtLHFecha').val());
-    let dia=fechaSeleccionada.getDate()+1;
-    let mes=fechaSeleccionada.getMonth()+1<10?'0'+(fechaSeleccionada.getMonth()+1).toString():fechaSeleccionada.getMonth()+1<10;
-    let anio=fechaSeleccionada.getFullYear();
+    let fechaSeleccionada = new Date($('#txtLHFecha').val());
+    let dia = fechaSeleccionada.getDate() + 1;
+    let mes = fechaSeleccionada.getMonth() + 1 < 10 ? '0' + (fechaSeleccionada.getMonth() + 1).toString() : fechaSeleccionada.getMonth() + 1 < 10;
+    let anio = fechaSeleccionada.getFullYear();
 
     // Cabeza del formato
 
@@ -646,7 +647,7 @@ function agregarFinPlantillaLH(ws, filaInicio, workbook) {
     establecerValorCelda(ws, 'C4', $('#txtLHResponsable').val());
     establecerValorCelda(ws, 'C5', $('#txtLHDireccionDestinatario').val());
     establecerValorCelda(ws, 'G3', $('#txtLHRUCDestinatario').val());
-    establecerValorCelda(ws, 'G4', dia+'/'+mes+'/'+anio);
+    establecerValorCelda(ws, 'G4', dia + '/' + mes + '/' + anio);
     establecerValorCelda(ws, 'G5', $('#txtLHNumCot').val());
 
 
@@ -706,11 +707,11 @@ function agregarFinPlantillaNA(ws, filInicio, workbook) {
     // Cabeza del formato
 
     // Datos de la proforma
-    let fechaSeleccionada=new Date($('#txtNAFecha').val());
+    let fechaSeleccionada = new Date($('#txtNAFecha').val());
 
-    establecerValorCelda(ws, 'I8', fechaSeleccionada.getDate()+1, '898989');
+    establecerValorCelda(ws, 'I8', fechaSeleccionada.getDate() + 1, '898989');
 
-    establecerValorCelda(ws, 'J8', fechaSeleccionada.getMonth()+1<10?'0'+(fechaSeleccionada.getMonth()+1).toString():fechaSeleccionada.getMonth()+1<10, '898989');
+    establecerValorCelda(ws, 'J8', fechaSeleccionada.getMonth() + 1 < 10 ? '0' + (fechaSeleccionada.getMonth() + 1).toString() : fechaSeleccionada.getMonth() + 1 < 10, '898989');
     establecerValorCelda(ws, 'K8', fechaSeleccionada.getFullYear(), '898989');
 
     establecerValorCelda(ws, 'I11', `${$('#txtNARUC').val()}`, '898989');
@@ -822,7 +823,7 @@ function generarExcelGlassgow() {
             // Luego, establezco la parte final para la plantilla de Glassgow
             agregarFinPlantillaGlassgow(ws, filInicio, workbook)
                 .then(mensaje => {
-                    guardarExcel(workbook,'cotizacionGlassgow');
+                    guardarExcel(workbook, 'cotizacionGlassgow');
                 })
 
         }, error => {
@@ -882,7 +883,7 @@ function generarExcelLH() {
             // Luego, establezco la parte final para la plantilla de LH
             agregarFinPlantillaLH(ws, filInicio, workbook);
 
-            guardarExcel(workbook,'cotizacionLH');
+            guardarExcel(workbook, 'cotizacionLH');
         })
         .catch((error) => {
             alert(error);
@@ -932,7 +933,7 @@ function generarExcelNA() {
             // Luego, establezco la parte final para la plantilla de NA
             agregarFinPlantillaNA(ws, filInicio, workbook);
 
-            guardarExcel(workbook,'cotizacionNA');
+            guardarExcel(workbook, 'cotizacionNA');
         })
         .catch((error) => {
             alert(error);
