@@ -695,8 +695,8 @@ function agregarFinPlantillaLH(ws, filaInicio, workbook) {
 
                 // Aquí agrego la imagen a las celdas que necesito
                 ws.addImage(firmaGlassgow, {
-                    tl: { col: 4.9, row: filaInicio + 4 },
-                    ext: { width: 170, height: 80 }
+                    tl: { col: 3, row: filaInicio + 5 },
+                    ext: { width: 160, height: 160 }
                 });
                 sellitoListo = true;
 
@@ -735,8 +735,8 @@ function agregarFinPlantillaLH(ws, filaInicio, workbook) {
 
                 // Aquí agrego la imagen a las celdas que necesito
                 ws.addImage(firmaGlassgow, {
-                    tl: { col: 4.9, row: filaInicio + 4 },
-                    ext: { width: 170, height: 80 }
+                    tl: { col: 5, row: filaInicio + 6 },
+                    ext: { width: 220, height: 90 }
                 });
                 firmaLista = true;
                 if (sellitoListo && firmaLista) {
@@ -775,17 +775,19 @@ function agregarFinPlantillaNA(ws, filInicio, workbook) {
     // Datos de la proforma
     let fechaSeleccionada = new Date($('#txtNAFecha').val());
 
-    establecerValorCelda(ws, 'I8', fechaSeleccionada.getDate() + 1, '898989');
+    establecerValorCelda(ws, 'I8', fechaSeleccionada.getDate() + 1, '898989',null,null,'000000','Lucida Bright',10);
 
-    establecerValorCelda(ws, 'J8', fechaSeleccionada.getMonth() + 1 < 10 ? '0' + (fechaSeleccionada.getMonth() + 1).toString() : fechaSeleccionada.getMonth() + 1 < 10, '898989');
-    establecerValorCelda(ws, 'K8', fechaSeleccionada.getFullYear(), '898989');
+    establecerValorCelda(ws, 'J8', 
+    fechaSeleccionada.getMonth() + 1 < 10 ? '0' + (fechaSeleccionada.getMonth() + 1).toString() : fechaSeleccionada.getMonth() + 1 < 10,
+    '898989',null,null,'000000','Lucida Bright',10);
+    establecerValorCelda(ws, 'K8', fechaSeleccionada.getFullYear(), '898989',null,null,'000000','Lucida Bright',10);
 
-    establecerValorCelda(ws, 'I11', `${$('#txtNARUC').val()}`, '898989');
+    establecerValorCelda(ws, 'I11', `${$('#txtNARUC').val()}`, '898989',null,null,'000000','Lucida Bright',10);
 
     // Filiación
-    establecerValorCelda(ws, 'C12', $('#txtNASenores').val());
-    establecerValorCelda(ws, 'C13', $('#txtNAAtencion').val());
-    establecerValorCelda(ws, 'C14', $('#txtNADireccion').val());
+    establecerValorCelda(ws, 'C12', $('#txtNASenores').val(),null,null,false,'000000','Lucida Bright',11);
+    establecerValorCelda(ws, 'C13', $('#txtNAAtencion').val(),null,null,false,'000000','Lucida Bright',11);
+    establecerValorCelda(ws, 'C14', $('#txtNADireccion').val(),null,null,false,'000000','Lucida Bright',11);
 
 }
 
@@ -982,12 +984,12 @@ function generarExcelNA() {
 
                 let producto = productos[i];
                 // Este formato requiere unir las celdas A y B de cantidad
-                unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, `${producto.cantidad}`, '000000');
-                establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, null, '000000');
+                unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, `${producto.cantidad}`,'000000',null,null,false,false,'Lucida Bright',10);
+                establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, null, '000000','Lucida Bright',10,false);
 
                 // Este formato requiere unir las celdas D a G de descripción
-                unirCeldas(ws, `D${filInicio}`, `G${filInicio}`, producto.descripcion, '000000');
-                establecerValorCelda(ws, `H${filInicio}`, `${producto.precio}`, null, null, null, '000000');
+                unirCeldas(ws, `D${filInicio}`, `G${filInicio}`, producto.descripcion, '000000',null,null,false,false,'Lucida Bright',10);
+                establecerValorCelda(ws, `H${filInicio}`, `${producto.precio}`, null, null, null,'000000','Lucida Bright',10,false);
 
                 // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
                 establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC((A${(filInicio)}*H${(filInicio)}),2)`, null, '000000');
@@ -997,12 +999,12 @@ function generarExcelNA() {
 
             // Para los totales de todos los registros
             // Primero, el total (Suma simple)
-            establecerValorCelda(ws, `H${filInicio}`, "Total", "000000", "ffffff", false, '000000');
+            establecerValorCelda(ws, `H${filInicio}`, "Total", "000000", "ffffff", false, '000000','Lucida Bright',10,false);
             establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC(SUM(I18:I${(filInicio - 1)}),2)`, null, '000000');
 
-            unirCeldas(ws, `A${filInicio + 5}`, `I${filInicio + 5}`, $('#txtNAAnotacion').val(), null, null, false);
-            unirCeldas(ws, `A${filInicio + 6}`, `I${filInicio + 6}`, $('#txtNAEntrega').val(), null, null, false);
-            unirCeldas(ws, `A${filInicio + 7}`, `I${filInicio + 7}`, $('#txtNAVencimiento').val(), null, null, false);
+            unirCeldas(ws, `A${filInicio + 5}`, `I${filInicio + 5}`, $('#txtNAAnotacion').val(), null, null, null,true,false,'Lucida Bright',9);
+            unirCeldas(ws, `A${filInicio + 6}`, `I${filInicio + 6}`, 'ENTREGA '+$('#txtNAEntrega').val(), null, null, null,true,false,'Lucida Bright',9);
+            unirCeldas(ws, `A${filInicio + 7}`, `I${filInicio + 7}`, 'VENCIMIENTO DE '+$('#txtNAVencimiento').val(), null, null, null,true,false,'Lucida Bright',9);
 
             // Luego, establezco la parte final para la plantilla de NA
             agregarFinPlantillaNA(ws, filInicio, workbook);
