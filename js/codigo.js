@@ -425,7 +425,7 @@ $("#btnMostrarReg2").click(function (ev) {
      <i class="fa fa-angle-left"></i> Retroceder 
      </div>
      <div class="col-md-7">
-     <h4 class="float-left">Generar factura</h4>
+     <h4 class="float-left">Generar cotización</h4>
      </div>`);
 
 });
@@ -591,7 +591,7 @@ function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
         // Verifico si el usuario quiere que se muestre la imagen
         if ($('#chkGenerarFirmaGlassgow').prop('checked')) {
 
-            leerImagen("../plantillas/firmaGlassgow.png", "png").then(data => {
+            leerImagen("../imagenes/firmaGlassgow.png", "png").then(data => {
 
                 var firmaGlassgow = workbook.addImage({
                     base64: data,
@@ -600,10 +600,11 @@ function agregarFinPlantillaGlassgow(worksheet, filInicio, workbook) {
 
                 // Aquí agrego la imagen a las celdas que necesito
                 worksheet.addImage(firmaGlassgow, {
-                    tl: { col: 4.1, row: filInicio + 3.2 },
-                    br: { col: 7, row: filInicio + 9 }
+                    tl: { col: 4.9, row: filInicio + 4 },
+                    ext: { width: 170, height: 80 },
+                    editAs: 'absolute'
+                    
                 });
-                //worksheet.addImage(firmaGlassgow,`E${filInicio + 4}:G${filInicio + 9}`);
 
                 resolve("Imagen leída satisfactoriamente");
             }, error => {
@@ -793,12 +794,12 @@ function generarExcelGlassgow() {
             for (var i = 0; i < productos.length; i++) {
 
                 let producto = productos[i];
-                establecerValorCelda(ws, `A${filInicio}`, producto.id, null, null, false, '000000');
-                establecerValorCelda(ws, `B${filInicio}`, producto.cantidad, null, null, false, '000000');
+                establecerValorCelda(ws, `A${filInicio}`, `${producto.id}`, null, null, false, '000000');
+                establecerValorCelda(ws, `B${filInicio}`, `${producto.cantidad}`, null, null, false, '000000');
                 establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, false, '000000');
                 establecerValorCelda(ws, `D${filInicio}`, producto.descripcion, null, null, false, '000000');
                 establecerValorCelda(ws, `E${filInicio}`, producto.marca, null, null, false, '000000');
-                establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '000000');
+                establecerValorCelda(ws, `F${filInicio}`, `${producto.precio}`, null, null, false, '000000');
                 //establecerValorCelda(ws, `G${filInicio}`, producto.precioConIGV);
 
                 // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
@@ -858,8 +859,8 @@ function generarExcelLH() {
                 // Este formato requiere unir las celdas B y C de descripción
                 unirCeldas(ws, `B${filInicio}`, `C${filInicio}`, producto.descripcion, '28a98a');
                 establecerValorCelda(ws, `D${filInicio}`, producto.marca, null, null, false, '28a98a')
-                establecerValorCelda(ws, `E${filInicio}`, producto.cantidad, null, null, false, '28a98a');
-                establecerValorCelda(ws, `F${filInicio}`, producto.precio, null, null, false, '28a98a');
+                establecerValorCelda(ws, `E${filInicio}`, `${producto.cantidad}`, null, null, false, '28a98a');
+                establecerValorCelda(ws, `F${filInicio}`, `${producto.precio}`, null, null, false, '28a98a');
 
                 // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
                 establecerFormulaCelda(ws, `G${filInicio}`, `=TRUNC((E${(filInicio)}*F${(filInicio)}),2)`, null, '28a98a');
@@ -908,12 +909,12 @@ function generarExcelNA() {
 
                 let producto = productos[i];
                 // Este formato requiere unir las celdas A y B de cantidad
-                unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, producto.cantidad, '000000');
+                unirCeldas(ws, `A${filInicio}`, `B${filInicio}`, `${producto.cantidad}`, '000000');
                 establecerValorCelda(ws, `C${filInicio}`, producto.unidad, null, null, null, '000000');
 
                 // Este formato requiere unir las celdas D a G de descripción
                 unirCeldas(ws, `D${filInicio}`, `G${filInicio}`, producto.descripcion, '000000');
-                establecerValorCelda(ws, `H${filInicio}`, producto.precio, null, null, null, '000000');
+                establecerValorCelda(ws, `H${filInicio}`, `${producto.precio}`, null, null, null, '000000');
 
                 // Establezco la fórmula para los subtotales de cada registro (=precioConIGV)
                 establecerFormulaCelda(ws, `I${filInicio}`, `=TRUNC((A${(filInicio)}*H${(filInicio)}),2)`, null, '000000');
