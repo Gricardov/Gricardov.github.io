@@ -616,66 +616,155 @@ function agregarFinPlantillaLH(ws, filaInicio, workbook) {
     let mes = fechaSeleccionada.getMonth() + 1 < 10 ? '0' + (fechaSeleccionada.getMonth() + 1).toString() : fechaSeleccionada.getMonth() + 1 < 10;
     let anio = fechaSeleccionada.getFullYear();
 
-    // Cabeza del formato
+    return new Promise((resolve, reject) => {
+        // Cabeza del formato
 
-    // Agrego los datos de la empresa
-    ws.getCell(`B1`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
+        // Agrego los datos de la empresa
+        ws.getCell(`B1`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
 
-    establecerValorCelda(ws, 'B1', ` \r\n${$('#txtLHRazonSocial').val()}\r\nRUC: ${$('#txtLHRUC').val()}\r\n${$('#txtLHDireccion').val()}\r\nTELÉFONO: ${$('#txtLHTelefono').val()}\r\nCORREO: ${$('#txtLHCorreo').val()}`,
-    '516379', null, true, null, 'Leelawadee', 11, false)
+        establecerValorCelda(ws, 'B1', ` \r\n${$('#txtLHRazonSocial').val()}\r\nRUC: ${$('#txtLHRUC').val()}\r\n${$('#txtLHDireccion').val()}\r\nTELÉFONO: ${$('#txtLHTelefono').val()}\r\nCORREO: ${$('#txtLHCorreo').val()}`,
+            '516379', null, true, null, 'Leelawadee', 11, false)
 
-    establecerValorCelda(ws, 'C3', $('#txtLHSenores').val(), '516379', null, true, null, 'Leelawadee', 12, false);
-    establecerValorCelda(ws, 'C4', $('#txtLHResponsable').val(), '516379', null, true, null, 'Leelawadee', 12, false);
-    establecerValorCelda(ws, 'C5', $('#txtLHDireccionDestinatario').val(), '516379', null, true, null, 'Leelawadee', 12, false);
-    establecerValorCelda(ws, 'G3', $('#txtLHRUCDestinatario').val(), '516379', null, true, null, 'Leelawadee', 12, false);
-    establecerValorCelda(ws, 'G4', dia + '/' + mes + '/' + anio, '516379', null, true, null, 'Leelawadee', 12, false);
-    establecerValorCelda(ws, 'G5', $('#txtLHNumCot').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+        establecerValorCelda(ws, 'C3', $('#txtLHSenores').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+        establecerValorCelda(ws, 'C4', $('#txtLHResponsable').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+        establecerValorCelda(ws, 'C5', $('#txtLHDireccionDestinatario').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+        establecerValorCelda(ws, 'G3', $('#txtLHRUCDestinatario').val(), '516379', null, true, null, 'Leelawadee', 12, false);
+        establecerValorCelda(ws, 'G4', dia + '/' + mes + '/' + anio, '516379', null, true, null, 'Leelawadee', 12, false);
+        establecerValorCelda(ws, 'G5', $('#txtLHNumCot').val(), '516379', null, true, null, 'Leelawadee', 12, false);
 
 
-    // Agrego los bordes para los cuadritos que faltan
-    let colorBorde = "299b5d";
-    let estiloBorde = "medium";
+        // Agrego los bordes para los cuadritos que faltan
+        let colorBorde = "299b5d";
+        let estiloBorde = "medium";
 
-    ws.getCell(`F{${filaInicio + 1}}`).border = {
-        top: { style: estiloBorde, color: { argb: colorBorde } },
-        left: { style: estiloBorde, color: { argb: colorBorde } }
-    }
+        ws.getCell(`F{${filaInicio + 1}}`).border = {
+            top: { style: estiloBorde, color: { argb: colorBorde } },
+            left: { style: estiloBorde, color: { argb: colorBorde } }
+        }
 
-    ws.getCell(`F{${filaInicio + 2}}`).border = {
-        left: { style: estiloBorde, color: { argb: colorBorde } }
-    }
+        ws.getCell(`F{${filaInicio + 2}}`).border = {
+            left: { style: estiloBorde, color: { argb: colorBorde } }
+        }
 
-    ws.getCell(`F{${filaInicio + 3}}`).border = {
-        left: { style: estiloBorde, color: { argb: colorBorde } },
-        bottom: { style: estiloBorde, color: { argb: colorBorde } }
-    }
+        ws.getCell(`F{${filaInicio + 3}}`).border = {
+            left: { style: estiloBorde, color: { argb: colorBorde } },
+            bottom: { style: estiloBorde, color: { argb: colorBorde } }
+        }
 
-    ws.getCell(`G{${filaInicio + 1}}`).border = {
-        top: { style: estiloBorde, color: { argb: colorBorde } },
-        right: { style: estiloBorde, color: { argb: colorBorde } }
-    }
+        ws.getCell(`G{${filaInicio + 1}}`).border = {
+            top: { style: estiloBorde, color: { argb: colorBorde } },
+            right: { style: estiloBorde, color: { argb: colorBorde } }
+        }
 
-    ws.getCell(`G{${filaInicio + 2}}`).border = {
-        right: { style: estiloBorde, color: { argb: colorBorde } }
-    }
+        ws.getCell(`G{${filaInicio + 2}}`).border = {
+            right: { style: estiloBorde, color: { argb: colorBorde } }
+        }
 
-    ws.getCell(`G{${filaInicio + 3}}`).border = {
-        right: { style: estiloBorde, color: { argb: colorBorde } },
-        bottom: { style: estiloBorde, color: { argb: colorBorde } }
-    }
+        ws.getCell(`G{${filaInicio + 3}}`).border = {
+            right: { style: estiloBorde, color: { argb: colorBorde } },
+            bottom: { style: estiloBorde, color: { argb: colorBorde } }
+        }
 
-    ws.getCell(`B{${filaInicio + 5}}`).border = {
-        top: { style: estiloBorde, color: { argb: colorBorde } },
-        left: { style: estiloBorde, color: { argb: colorBorde } },
-        right: { style: estiloBorde, color: { argb: colorBorde } },
-        bottom: { style: estiloBorde, color: { argb: colorBorde } }
-    }
+        ws.getCell(`B{${filaInicio + 5}}`).border = {
+            top: { style: estiloBorde, color: { argb: colorBorde } },
+            left: { style: estiloBorde, color: { argb: colorBorde } },
+            right: { style: estiloBorde, color: { argb: colorBorde } },
+            bottom: { style: estiloBorde, color: { argb: colorBorde } }
+        }
 
-    // Agrego el cuadro de observaciones
+        // Agrego el cuadro de observaciones
 
-    unirCeldas(ws, `B${filaInicio + 5}`, `G${filaInicio + 14}`, `OBSERVACIONES:\r\n\r\nGARANTIA: ${$('#txtLHGarantia').val()}\r\nCONDICIONES: ${$('#txtLHCondiciones').val()}\r\nENTREGA: ${$('#txtLHEntrega').val()}`,
-        colorBorde, '516379', null, true, true, 'Leelawadee', '12');
-    ws.getCell(`B${filaInicio + 5}`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
+        unirCeldas(ws, `B${filaInicio + 5}`, `G${filaInicio + 14}`, `OBSERVACIONES:\r\n\r\nGARANTIA: ${$('#txtLHGarantia').val()}\r\nCONDICIONES: ${$('#txtLHCondiciones').val()}\r\nENTREGA: ${$('#txtLHEntrega').val()}`,
+            colorBorde, '516379', null, true, true, 'Leelawadee', '12');
+        ws.getCell(`B${filaInicio + 5}`).alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
+
+        // Variables que controlan la lectura de las imágenes
+        let sellitoListo = false;
+        let firmaLista = false;
+
+
+        // Verifico si el usuario quiere que se muestre el sellito
+        if ($('#chkGenerarSellitoBPALH').prop('checked')) {
+
+            leerImagen("../imagenes/sellitoBPALH.png", "png").then(data => {
+
+                var firmaGlassgow = workbook.addImage({
+                    base64: data,
+                    extension: 'png',
+                });
+
+                // Aquí agrego la imagen a las celdas que necesito
+                ws.addImage(firmaGlassgow, {
+                    tl: { col: 4.9, row: filaInicio + 4 },
+                    ext: { width: 170, height: 80 }
+                });
+                sellitoListo = true;
+
+                if (sellitoListo && firmaLista) {
+                    resolve("Sellito leído satisfactoriamente");
+                }
+            }, error => {
+
+                var mensErr = new Error(error.message);
+                throw mensErr;
+
+            }).catch(error => {
+                console.log("Error : " + error.message);
+                sellitoListo = true;
+                if (sellitoListo && firmaLista) {
+
+                    resolve("Error al leer el sellito");
+                }
+            })
+        } else {
+            sellitoListo = true;
+            if (sellitoListo && firmaLista) {
+
+                resolve("El usuario decidió no leer el sellito");
+            }
+        }
+
+        if ($('#chkGenerarFirmaLH').prop('checked')) {
+
+            leerImagen("../imagenes/firmaLH.png", "png").then(data => {
+
+                var firmaGlassgow = workbook.addImage({
+                    base64: data,
+                    extension: 'png',
+                });
+
+                // Aquí agrego la imagen a las celdas que necesito
+                ws.addImage(firmaGlassgow, {
+                    tl: { col: 4.9, row: filaInicio + 4 },
+                    ext: { width: 170, height: 80 }
+                });
+                firmaLista = true;
+                if (sellitoListo && firmaLista) {
+
+                    resolve("Firma leída satisfactoriamente");
+                }
+            }, error => {
+
+                var mensErr = new Error(error.message);
+                throw mensErr;
+
+            }).catch(error => {
+                console.log("Error : " + error.message);
+                firmaLista = true;
+                if (sellitoListo && firmaLista) {
+
+                    resolve("Error al leer la firma");
+                }
+            })
+        } else {
+            firmaLista = true;
+            if (sellitoListo && firmaLista) {
+
+                resolve("El usuario decidió no leer la firma");
+            }
+        }
+
+    })
 
 
 }
@@ -858,9 +947,17 @@ function generarExcelLH() {
             establecerFormulaCelda(ws, `G${filInicio + 2}`, `=TRUNC((G${filInicio + 3}-G${filInicio + 1}),2)`, null, '28a98a');
 
             // Luego, establezco la parte final para la plantilla de LH
-            agregarFinPlantillaLH(ws, filInicio, workbook);
+            agregarFinPlantillaLH(ws, filInicio, workbook)
+                .then(mensaje => {
+                    guardarExcel(workbook, 'cotizacionLH');
 
-            guardarExcel(workbook, 'cotizacionLH');
+                })
+
+        }, error => {
+
+            var mensErr = new Error(error.message);
+            throw mensErr;
+
         })
         .catch((error) => {
             alert(error);
@@ -909,8 +1006,13 @@ function generarExcelNA() {
 
             // Luego, establezco la parte final para la plantilla de NA
             agregarFinPlantillaNA(ws, filInicio, workbook);
-
             guardarExcel(workbook, 'cotizacionNA');
+
+        }, error => {
+
+            var mensErr = new Error(error.message);
+            throw mensErr;
+
         })
         .catch((error) => {
             alert(error);
